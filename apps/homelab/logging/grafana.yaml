@@ -1,0 +1,58 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: grafana
+  namespace: logging
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: grafana
+      version: "11.2.0"
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: flux-system
+      interval: 24h
+  values:
+    admin:
+      existingSecret: grafana-admin
+      passwordKey: admin-password
+      userKey: admin-user
+    grafana.ini:
+      auth.anonymous:
+        enabled: false
+      log:
+        level: info
+        mode: console
+      server:
+        root_url: http://192.168.0.243
+      users:
+        allow_sign_up: false
+    initChownData:
+      enabled: false
+    persistence:
+      enabled: true
+      size: 10Gi
+      storageClassName: local-path
+      accessModes:
+        - ReadWriteOnce
+      finalizers:
+        - kubernetes.io/pvc-protection
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    securityContext:
+      fsGroup: 472
+      runAsGroup: 472
+      runAsNonRoot: true
+      runAsUser: 472
+    service:
+      type: LoadBalancer
+      port: 80
+      annotations:
+        metallb.universe.tf/address-pool: mlab-pool

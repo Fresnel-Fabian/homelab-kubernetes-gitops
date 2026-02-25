@@ -1,0 +1,10 @@
+USER-SUPPLIED VALUES:
+admin:
+  existingSecret: grafana-admin
+persistence:
+  enabled: true
+  size: 5Gi
+service:
+  annotations:
+    metallb.universe.tf/address-pool: mlab-pool
+  type: LoadBalancer
