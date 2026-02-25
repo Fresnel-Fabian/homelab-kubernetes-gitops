@@ -1,7 +1,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: grafana
+  name: grafana-community
   namespace: logging
 spec:
   interval: 1h
@@ -11,7 +11,7 @@ spec:
       version: "11.2.0"
       sourceRef:
         kind: HelmRepository
-        name: grafana
+        name: grafana-community
         namespace: flux-system
       interval: 24h
   values:
