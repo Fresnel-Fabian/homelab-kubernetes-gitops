@@ -1,4 +1,3 @@
----
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -14,18 +13,9 @@ spec:
         name: prometheus-community
       version: 82.1.0
   interval: 30m0s
-  storageNamespace: monitoring
   targetNamespace: monitoring
-  values:
-    grafana:
-      enabled: false
-    prometheus:
-      prometheusSpec:
-        retention: 15d
-        storageSpec:
-          volumeClaimTemplate:
-            spec:
-              resources:
-                requests:
-                  storage: 20Gi
-              storageClassName: local-path
+  storageNamespace: monitoring
+  valuesFrom:
+    - kind: ConfigMap
+      name: prometheus-values
+      valuesKey: values.yaml
