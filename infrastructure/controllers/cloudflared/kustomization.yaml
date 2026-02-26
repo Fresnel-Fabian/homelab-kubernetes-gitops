@@ -6,3 +6,4 @@ resources:
   - secret.enc.yaml
   - deployment.yaml
   - pdb.yaml
+  - networkpolicy.yaml

@@ -1,0 +1,55 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cloudflared-lockdown
+  namespace: cloudflared
+spec:
+  podSelector:
+    matchLabels:
+      app: cloudflared
+  policyTypes:
+  - Ingress
+  - Egress
+
+  # Nothing can initiate connections TO cloudflared
+  # (it only makes outbound connections)
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: monitoring
+    ports:
+    - port: 2000   # only Prometheus can scrape metrics
+
+  egress:
+  # DNS — must be first or nothing resolves
+  - ports:
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP
+
+  # Cloudflare edge IPs — outbound tunnel connections
+  - to:
+    - ipBlock:
+        cidr: 162.159.0.0/16   # Cloudflare's primary range
+    - ipBlock:
+        cidr: 198.41.128.0/20  # Cloudflare's secondary range
+    ports:
+    - port: 7844   # cloudflared's preferred port
+    - port: 443    # fallback
+
+  # Only allow egress to specific namespaces you're exposing
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: logging
+    ports:
+    - port: 80
+
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: monitoring
+    ports:
+    - port: 9090
