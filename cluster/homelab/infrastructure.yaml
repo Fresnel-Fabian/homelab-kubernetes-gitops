@@ -10,7 +10,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  decyption:
+  decryption:
     provider: sops
     secretRef:
       name: sops-age
