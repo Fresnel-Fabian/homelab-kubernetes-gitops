@@ -4,3 +4,4 @@ resources:
   - metallb
   - local-path-provisioner
   - metrics-server
+  - cloudflared

@@ -1,0 +1,24 @@
+# cloudflared-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudflared-config
+  namespace: cloudflared
+data:
+  config.yaml: |
+    tunnel: 20ee9b9e-d3b7-40bf-91a0-9a6279d0cb2a
+    credentials-file: /etc/cloudflared/creds/credentials.json
+
+    metrics: 0.0.0.0:2000
+
+    ingress:
+      # Grafana
+      - hostname: grafana.fresnelfabian.com
+        service: http://grafana.logging.svc.cluster.local:80
+        originRequest:
+          connectTimeout: 10s
+          noTLSVerify: false
+
+      # Catch-all — required, must be last
+      - service: http_status:404
+
