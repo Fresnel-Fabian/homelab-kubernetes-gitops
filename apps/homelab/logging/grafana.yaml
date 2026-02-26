@@ -55,4 +55,4 @@ spec:
       type: LoadBalancer
       port: 80
       annotations:
-        metallb.universe.tf/address-pool: mlab-pool
+        metallb.universe.tf/loadBalancerIPs: 192.168.0.243
