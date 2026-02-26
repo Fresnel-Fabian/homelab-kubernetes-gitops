@@ -1,0 +1,3 @@
+creation_rules:
+  - path_regex: infrastructure/controllers/cloudflared/secret.enc.yaml
+    age: age1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
