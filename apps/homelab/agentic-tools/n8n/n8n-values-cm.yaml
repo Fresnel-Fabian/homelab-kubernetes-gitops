@@ -5,36 +5,37 @@ metadata:
   namespace: flux-system
 data:
   values.yaml: |
+    db:
+      type: postgresdb
+
+    externalPostgresql:
+      host: postgres.dbs.svc.cluster.local  # adjust to your PG service
+      port: 5432
+      database: n8n
+      username: n8n
+      password: ""   # overridden by secret
+
+    encryptionKey: ""   # overridden by secret
+
     main:
-      config:
-        db:
-          type: postgresdb
-          postgresdb:
-            host: postgres.dbs.svc.cluster.local  # adjust to your PG service
-            port: 5432
-            database: n8n
-            user: n8n
-        generic:
-          timezone: "America/New_York"
-        n8n:
-          hide_usage_page: true
-
-      # secret: block goes in a separate Secret + valuesFrom (see below)
-
-      persistence:
-        enabled: true
-        storageClass: local-path
-        size: 5Gi
-
       resources:
         requests:
           memory: 512Mi
         limits:
           memory: 1024Mi
+      persistence:
+        enabled: true
+        storageClass: local-path
+        size: 5Gi
+        accessMode: ReadWriteOnce
 
-      service:
-        type: LoadBalancer
-        port: 5678
+    service:
+      enabled: true
+      type: LoadBalancer
+      port: 5678
 
     ingress:
+      enabled: false
+
+    diagnostics:
       enabled: false
