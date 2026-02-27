@@ -31,8 +31,16 @@ data:
 
     service:
       enabled: true
-      type: LoadBalancer
+      type: ClusterIP
       port: 5678
+
+    n8n:
+      host: n8n.fresnelfabian.com
+      protocol: https
+
+    extraEnv:
+      - name: WEBHOOK_URL
+        value: "https://n8n.fresnelfabian.com"
 
     ingress:
       enabled: false
