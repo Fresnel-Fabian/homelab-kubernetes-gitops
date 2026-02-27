@@ -18,6 +18,12 @@ data:
         originRequest:
           connectTimeout: 10s
           noTLSVerify: false
+      # n8n
+      - hostname: n8n.fresnelfabian.com
+        service: http://agentic-tools-n8n.agentic-tools.svc.cluster.local:5678
+        originRequest:
+          connectTimeout: 10s
+          noTLSVerify: false
 
       # Catch-all — required, must be last
       - service: http_status:404
