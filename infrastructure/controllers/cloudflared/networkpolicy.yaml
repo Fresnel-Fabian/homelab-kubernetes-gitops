@@ -34,7 +34,7 @@ spec:
     - ipBlock:
         cidr: 162.159.0.0/16   # Cloudflare's primary range
     - ipBlock:
-        cidr: 198.41.128.0/20  # Cloudflare's secondary range
+        cidr: 198.41.128.0/17  # Cloudflare's secondary range
     ports:
     - port: 7844   # cloudflared's preferred port
       protocol: TCP
