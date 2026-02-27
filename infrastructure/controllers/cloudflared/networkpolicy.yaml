@@ -37,7 +37,13 @@ spec:
         cidr: 198.41.128.0/20  # Cloudflare's secondary range
     ports:
     - port: 7844   # cloudflared's preferred port
+      protocol: TCP
+    - port: 7844
+      protocol: UDP
     - port: 443    # fallback
+      protocol: TCP
+    - port: 443
+      protocol: UDP
 
   # Only allow egress to specific namespaces you're exposing
   - to:
