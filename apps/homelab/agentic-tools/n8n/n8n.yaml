@@ -13,8 +13,8 @@ spec:
         name: community-charts
       version: "1.16.29"
   interval: 30m
-  targetNamespace: agentic
-  storageNamespace: agentic
+  targetNamespace: agentic-tools
+  storageNamespace: agentic-tools
   valuesFrom:
     - kind: ConfigMap
       name: n8n-values
