@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openclaw
+  namespace: agentic-tools
+  labels:
+    app: openclaw
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openclaw
+  strategy:
+    type: Recreate    # stateful — prevent split-brain on workspace PVC
+  template:
+    metadata:
+      labels:
+        app: openclaw
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/worker: "true"   # keep off control plane
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: openclaw
+        image: ghcr.io/openclaw/openclaw:latest
+        ports:
+        - name: gateway
+          containerPort: 18789
+        env:
+        - name: ANTHROPIC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: openclaw-secret
+              key: anthropic-api-key
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: openclaw-secret
+              key: openai-api-key
+        - name: GOOGLE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: openclaw-secret
+              key: gemini-api-key
+        - name: GATEWAY_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: openclaw-secret
+              key: gateway-password
+        - name: TELEGRAM_BOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: openclaw-secret
+              key: telegram-bot-token
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        volumeMounts:
+        - name: config
+          mountPath: /root/.openclaw/openclaw.json
+          subPath: openclaw.json
+        - name: workspace
+          mountPath: /root/.openclaw/workspace
+        - name: skills
+          mountPath: /root/.openclaw/workspace/skills/model-manager/SKILL.md
+          subPath: SKILL.md
+        livenessProbe:
+          tcpSocket:
+            port: 18789
+          initialDelaySeconds: 20
+          periodSeconds: 30
+        readinessProbe:
+          tcpSocket:
+            port: 18789
+          initialDelaySeconds: 10
+          periodSeconds: 10
+      volumes:
+      - name: config
+        configMap:
+          name: openclaw-config
+      - name: workspace
+        persistentVolumeClaim:
+          claimName: openclaw-workspace
+      - name: skills
+        configMap:
+          name: openclaw-skills

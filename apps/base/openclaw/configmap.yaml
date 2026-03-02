@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openclaw-config
+  namespace: agentic-tools
+data:
+  openclaw.json: |
+    {
+      "gateway": {
+        "port": 18789,
+        "bind": "loopback",
+        "auth": {
+          "mode": "password"
+        }
+      },
+      "agents": {
+        "defaults": {
+          "model": {
+            "primary": "google/gemini-2.0-flash",
+            "fallbacks": [
+              "google/gemini-2.0-flash",
+              "openai/gpt-4o-mini",
+              "google/gemini-2.0-flash-thinking",
+              "anthropic/claude-sonnet-4-6",
+              "openai/gpt-4o",
+              "anthropic/claude-opus-4-6"
+            ]
+          },
+          "models": {
+            "google/gemini-2.0-flash":                { "alias": "flash" },
+            "google/gemini-2.0-flash-thinking":       { "alias": "flash-think" },
+            "google/gemini-2.5-pro":                  { "alias": "gemini-pro" },
+            "openai/gpt-4o-mini":                     { "alias": "mini" },
+            "openai/gpt-4o":                          { "alias": "gpt4o" },
+            "openai/o3-mini":                         { "alias": "o3-mini" },
+            "anthropic/claude-sonnet-4-6":            { "alias": "sonnet" },
+            "anthropic/claude-opus-4-6":              { "alias": "opus" }
+          },
+          "sandbox": {
+            "mode": "non-main"
+          }
+        }
+      },
+      "auth": {
+        "cooldowns": {
+          "billingBackoffHours": 5,
+          "billingMaxHours": 24,
+          "failureWindowHours": 24
+        }
+      },
+      "channels": {
+        "telegram": { "dmPolicy": "pairing" },
+      }
+    }

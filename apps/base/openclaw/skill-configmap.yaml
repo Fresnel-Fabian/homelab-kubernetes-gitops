@@ -1,0 +1,106 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openclaw-skills
+  namespace: agentic-tools
+data:
+  SKILL.md: |
+    # Model Manager Skill
+
+    ## Philosophy: System 1 / System 2 Thinking
+
+    Route tasks like a human brain — most things run on autopilot.
+    Only escalate when genuine depth is needed.
+
+    ```
+    TIER 1 │ System 1    │ flash        │ google/gemini-2.5-flash         │ default
+    TIER 2 │ System 2    │ flash-think  │ google/gemini-2.5-flash-thinking│ on demand
+    TIER 3 │ Deep Work   │ sonnet/opus  │ anthropic/claude-*              │ escalated
+    TIER 4 │ Hard Logic  │ o3-mini      │ openai/o3-mini                  │ math/proofs
+    ```
+
+    ---
+
+    ## Routing Rules
+
+    ### TIER 1 — System 1 (flash) ← DEFAULT
+    The workhorse. Use for everything that doesn't require escalation:
+    - General coding, debugging, explaining concepts
+    - Summarising docs, writing emails, chat
+    - Most CLI / kubectl tasks
+    - File edits, config changes
+    - Any task where you'd answer without pausing to think hard
+
+    ### TIER 2 — System 2 (flash-think)
+    Switch when the current model is visibly struggling or the task demands it:
+    - Multi-step reasoning chains
+    - Debugging subtle logic errors across many files
+    - Designing a system or architecture from scratch
+    - When flash gives a wrong/shallow answer twice
+    - Tradeoff analysis between non-obvious options
+
+    ### TIER 3 — Deep Work (sonnet / opus)
+    Reserve for tasks where quality of thought is the bottleneck:
+    - Novel research, writing that needs real judgment
+    - Security review, threat modelling
+    - Complex refactors touching core abstractions
+    - When flash-think is still missing the mark
+
+    ### TIER 4 — Hard Logic (o3-mini)
+    Pull in for formal / mathematical tasks:
+    - Proofs, algorithm correctness
+    - Combinatorics, competitive-programming style problems
+    - Precise constraint satisfaction
+
+    ---
+
+    ## Self-Escalation Trigger Phrases
+
+    The agent should recognise these signals in its own reasoning and escalate:
+
+    | Signal | Action |
+    |---|---|
+    | "I'm not confident about..." | Escalate one tier |
+    | Multiple failed attempts at same bug | → flash-think |
+    | Task requires understanding unfamiliar codebase deeply | → sonnet |
+    | User says "think harder" / "you're missing something" | Escalate one tier |
+    | Math/proof required | → o3-mini |
+    | Stakes are high (prod deploy, data migration) | → at least flash-think |
+
+    ---
+
+    ## Session Model Switch (no bash needed)
+    Tell the user: use `/model <alias>` directly in chat.
+
+    Available aliases:
+    - `flash`        → google/gemini-2.5-flash         ← System 1 default
+    - `flash-think`  → google/gemini-2.5-flash-thinking ← System 2
+    - `gemini-pro`   → google/gemini-pro
+    - `mini`         → openai/gpt-4o-mini
+    - `gpt4o`        → openai/gpt-4o
+    - `o3-mini`      → openai/o3-mini                  ← Hard logic
+    - `sonnet`       → anthropic/claude-sonnet-4-6      ← Deep work
+    - `opus`         → anthropic/claude-opus-4-6        ← Max quality
+
+    ---
+
+    ## Change Global Default
+    When user says "set default model to X" or "make X the default":
+
+    ```bash
+    openclaw config set agents.defaults.model.primary <full-model-ref>
+    ```
+
+    Then confirm:
+    ```bash
+    openclaw models status --plain
+    ```
+
+    Tell user to run `/new` to apply.
+
+    ---
+
+    ## Check Current Model & Usage
+    ```bash
+    openclaw models status
+    ```
