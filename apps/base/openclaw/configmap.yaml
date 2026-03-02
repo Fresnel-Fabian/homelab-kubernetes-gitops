@@ -9,6 +9,7 @@ data:
       "gateway": {
         "port": 18789,
         "bind": "loopback",
+        "mode": "local",
         "auth": {
           "mode": "password"
         }
@@ -49,6 +50,9 @@ data:
         }
       },
       "channels": {
-        "telegram": { "dmPolicy": "pairing" },
+        "telegram": {
+          "dmPolicy": "pairing",
+          "groupPolicy": "open"
+        },
       }
     }
