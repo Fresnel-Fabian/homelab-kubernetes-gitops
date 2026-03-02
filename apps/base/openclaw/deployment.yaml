@@ -17,8 +17,6 @@ spec:
       labels:
         app: openclaw
     spec:
-      nodeSelector:
-        node-role.kubernetes.io/worker: "true"   # keep off control plane
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
