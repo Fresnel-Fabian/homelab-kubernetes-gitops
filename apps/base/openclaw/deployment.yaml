@@ -28,6 +28,8 @@ spec:
         - name: gateway
           containerPort: 18789
         env:
+        - name: NODE_OPTIONS
+          value: "--max-old-space-size=1024"
         - name: ANTHROPIC_API_KEY
           valueFrom:
             secretKeyRef:
@@ -59,11 +61,11 @@ spec:
             drop: ["ALL"]
         resources:
           requests:
-            cpu: 100m
-            memory: 256Mi
+            cpu: 200m
+            memory: 768Mi
           limits:
-            cpu: 500m
-            memory: 512Mi
+            cpu: 1000m
+            memory: 1.5Gi
         volumeMounts:
         - name: config
           mountPath: /root/.openclaw/openclaw.json
