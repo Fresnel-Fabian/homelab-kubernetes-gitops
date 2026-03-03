@@ -1,3 +1,4 @@
+# apps/base/openclaw/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,6 +24,20 @@ spec:
         runAsNonRoot: true
         runAsUser: 1000
         fsGroup: 1000
+      initContainers:
+      - name: copy-skills
+        image: busybox
+        command:
+        - sh
+        - -c
+        - |
+          mkdir -p /home/node/.openclaw/workspace/skills
+          cp -r /etc/openclaw/skills/. /home/node/.openclaw/workspace/skills/
+        volumeMounts:
+        - name: skills
+          mountPath: /etc/openclaw/skills
+        - name: workspace
+          mountPath: /home/node/.openclaw
       containers:
       - name: openclaw
         image: ghcr.io/openclaw/openclaw:latest
@@ -32,6 +47,8 @@ spec:
         env:
         - name: NODE_OPTIONS
           value: "--max-old-space-size=1024"
+        - name: OPENCLAW_CONFIG
+          value: "/etc/openclaw/openclaw.json"
         - name: ANTHROPIC_API_KEY
           valueFrom:
             secretKeyRef:
@@ -70,13 +87,10 @@ spec:
             memory: 1.5Gi
         volumeMounts:
         - name: config
-          mountPath: /home/node/.openclaw/openclaw.json
+          mountPath: /etc/openclaw/openclaw.json
           subPath: openclaw.json
         - name: workspace
           mountPath: /home/node/.openclaw
-        - name: skills
-          mountPath: /home/node/.openclaw/workspace/skills/model-manager/SKILL.md
-          subPath: SKILL.md
         livenessProbe:
           exec:
             command: ["sh", "-c", "curl -sf http://127.0.0.1:18789/ || exit 1"]
