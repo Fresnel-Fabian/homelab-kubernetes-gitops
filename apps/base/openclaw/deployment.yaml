@@ -73,7 +73,7 @@ spec:
           mountPath: /home/node/.openclaw/openclaw.json
           subPath: openclaw.json
         - name: workspace
-          mountPath: /home/node/.openclaw/workspace
+          mountPath: /home/node/.openclaw
         - name: skills
           mountPath: /home/node/.openclaw/workspace/skills/model-manager/SKILL.md
           subPath: SKILL.md
