@@ -29,7 +29,7 @@ data:
             }
           }
         }
-      }
+      },
 
       "agents": {
         "defaults": {
