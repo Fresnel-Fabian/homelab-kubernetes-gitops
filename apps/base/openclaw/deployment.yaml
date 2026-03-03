@@ -42,7 +42,7 @@ spec:
             secretKeyRef:
               name: openclaw-secret
               key: openai-api-key
-        - name: GOOGLE_API_KEY
+        - name: GEMINI_API_KEY
           valueFrom:
             secretKeyRef:
               name: openclaw-secret
@@ -70,12 +70,12 @@ spec:
             memory: 1.5Gi
         volumeMounts:
         - name: config
-          mountPath: /root/.openclaw/openclaw.json
+          mountPath: /home/node/.openclaw/openclaw.json
           subPath: openclaw.json
         - name: workspace
-          mountPath: /root/.openclaw/workspace
+          mountPath: /home/node/.openclaw/workspace
         - name: skills
-          mountPath: /root/.openclaw/workspace/skills/model-manager/SKILL.md
+          mountPath: /home/node/.openclaw/workspace/skills/model-manager/SKILL.md
           subPath: SKILL.md
         livenessProbe:
           exec:
