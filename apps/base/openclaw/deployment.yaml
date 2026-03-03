@@ -47,7 +47,7 @@ spec:
             secretKeyRef:
               name: openclaw-secret
               key: gemini-api-key
-        - name: GATEWAY_PASSWORD
+        - name: OPENCLAW_GATEWAY_PASSWORD
           valueFrom:
             secretKeyRef:
               name: openclaw-secret
