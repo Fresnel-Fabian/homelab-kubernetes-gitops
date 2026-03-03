@@ -6,97 +6,141 @@ metadata:
 data:
   SKILL.md: |
     # Model Manager Skill
-
     ## Philosophy: System 1 / System 2 Thinking
-
     Route tasks like a human brain — most things run on autopilot.
-    Only escalate when genuine depth is needed.
+    Escalate only when genuine depth is needed. Default cheap, earn your way up.
 
     ```
-    TIER 1 │ System 1    │ flash        │ google/gemini-2.5-flash         │ default
-    TIER 2 │ System 2    │ flash-think  │ google/gemini-2.5-flash-thinking│ on demand
-    TIER 3 │ Deep Work   │ sonnet/opus  │ anthropic/claude-*              │ escalated
-    TIER 4 │ Hard Logic  │ o3-mini      │ openai/o3-mini                  │ math/proofs
+    TIER 0 │ Reflex      │ flash-lite   │ google/gemini-2.5-flash-lite          │ trivial / high-volume
+    TIER 0 │ Reflex      │ nano         │ openai/gpt-5-nano                     │ trivial / high-volume
+    TIER 1 │ System 1    │ flash        │ google/gemini-2.5-flash               │ DEFAULT workhorse
+    TIER 1 │ System 1    │ haiku        │ anthropic/claude-haiku-4-5            │ budget Anthropic
+    TIER 1 │ System 1    │ mini         │ openai/gpt-5-mini                     │ budget OpenAI
+    TIER 2 │ System 2    │ flash-think  │ google/gemini-2.5-flash-thinking      │ reasoning / multi-step
+    TIER 2 │ System 2    │ o3-mini      │ openai/o3-mini                        │ math / proofs
+    TIER 3 │ Deep Work   │ sonnet       │ anthropic/claude-sonnet-4-6           │ quality writing / code
+    TIER 3 │ Deep Work   │ gpt5         │ openai/gpt-5.2                        │ frontier reasoning
+    TIER 3 │ Deep Work   │ gemini-pro   │ google/gemini-3.1-pro-preview         │ frontier multimodal
+    TIER 4 │ Frontier    │ opus         │ anthropic/claude-opus-4-6             │ max Anthropic quality
+    TIER 4 │ Frontier    │ gpt5-pro     │ openai/gpt-5.2-pro                    │ max OpenAI quality
     ```
 
     ---
 
     ## Routing Rules
 
-    ### TIER 1 — System 1 (flash) ← DEFAULT
-    The workhorse. Use for everything that doesn't require escalation:
+    ### TIER 0 — Reflex (flash-lite · nano)
+    Use for tasks that need no reasoning at all:
+    - Keyword extraction, entity recognition, yes/no classification
+    - Reformatting structured data (JSON/YAML/CSV transformations)
+    - Repetitive summarisation loops across many chunks
+    - Spell-check, translation of short strings, grep-style pattern matching
+    - Any task you'd delegate to a regex if you could
+
+    ### TIER 1 — System 1 (flash · haiku · mini) ← DEFAULT
+    The workhorse. Handles everything that doesn't require deliberate thought:
     - General coding, debugging, explaining concepts
-    - Summarising docs, writing emails, chat
-    - Most CLI / kubectl tasks
-    - File edits, config changes
-    - Any task where you'd answer without pausing to think hard
+    - Summarising docs, writing emails, chat, Q&A
+    - Most CLI / kubectl tasks, file edits, config changes
+    - Agentic loops where speed and cost matter more than perfection
 
-    ### TIER 2 — System 2 (flash-think)
-    Switch when the current model is visibly struggling or the task demands it:
-    - Multi-step reasoning chains
+    **Rotation strategy:** cycle flash → haiku → mini to spread spend across providers
+    and get natural load-balancing plus provider-specific strengths.
+
+    ### TIER 2 — System 2 (flash-think · o3-mini)
+    Switch when the task demands deliberate reasoning:
+    - Multi-step planning chains or dependency graphs
     - Debugging subtle logic errors across many files
-    - Designing a system or architecture from scratch
-    - When flash gives a wrong/shallow answer twice
+    - Designing system architecture or data models from scratch
+    - When Tier 1 gives a wrong/shallow answer twice in a row
     - Tradeoff analysis between non-obvious options
+    - Use **o3-mini** specifically for maths, proofs, algorithm correctness
 
-    ### TIER 3 — Deep Work (sonnet / opus)
-    Reserve for tasks where quality of thought is the bottleneck:
-    - Novel research, writing that needs real judgment
-    - Security review, threat modelling
+    ### TIER 3 — Deep Work (sonnet · gpt5 · gemini-pro)
+    Reserve for where quality of thought is the bottleneck:
+    - Novel research synthesis, writing requiring real judgment
+    - Security review, threat modelling, compliance analysis
     - Complex refactors touching core abstractions
+    - Long-context document understanding (gemini-pro → 1M context)
     - When flash-think is still missing the mark
 
-    ### TIER 4 — Hard Logic (o3-mini)
-    Pull in for formal / mathematical tasks:
-    - Proofs, algorithm correctness
-    - Combinatorics, competitive-programming style problems
-    - Precise constraint satisfaction
+    ### TIER 4 — Frontier (opus · gpt5-pro)
+    Only when maximum quality justifies maximum cost:
+    - Mission-critical production decisions (infra redesign, data migrations)
+    - Nuanced creative work where every word matters
+    - Final review pass on security-critical code
+    - When the user explicitly escalates or stakes are existential
 
     ---
 
     ## Self-Escalation Trigger Phrases
+    The agent should recognise these signals in its own reasoning and escalate automatically:
 
-    The agent should recognise these signals in its own reasoning and escalate:
+    | Signal                                          | Action                       |
+    |-------------------------------------------------|------------------------------|
+    | "I'm not confident about..."                    | Escalate one tier            |
+    | Same bug attempted twice with no fix            | → flash-think                |
+    | Task requires deep understanding of unfamiliar codebase | → sonnet             |
+    | User says "think harder" / "you're missing something" | Escalate one tier    |
+    | Math / proof / formal verification required     | → o3-mini                    |
+    | Prod deploy, data migration, security review    | → at least flash-think       |
+    | Long document (>100k tokens) ingestion          | → gemini-pro (1M ctx)        |
+    | User says "best model" / "spare no expense"     | → opus or gpt5-pro           |
+    | Cost is explicitly the constraint               | → flash-lite or nano         |
 
-    | Signal | Action |
-    |---|---|
-    | "I'm not confident about..." | Escalate one tier |
-    | Multiple failed attempts at same bug | → flash-think |
-    | Task requires understanding unfamiliar codebase deeply | → sonnet |
-    | User says "think harder" / "you're missing something" | Escalate one tier |
-    | Math/proof required | → o3-mini |
-    | Stakes are high (prod deploy, data migration) | → at least flash-think |
+    ---
+
+    ## Budget-Aware Routing Profiles
+    Use `/profile <name>` to switch the active rotation pool:
+
+    | Profile    | Models in rotation                                      | When to use              |
+    |------------|---------------------------------------------------------|--------------------------|
+    | `budget`   | flash-lite → nano → haiku                               | High-volume jobs, drafts |
+    | `standard` | flash → mini → haiku                                    | Default daily work       |
+    | `reasoning`| flash-think → o3-mini                                   | Analysis / proofs        |
+    | `premium`  | gemini-pro → sonnet → gpt5                              | Complex tasks            |
+    | `frontier` | opus → gpt5-pro                                         | Max quality only         |
 
     ---
 
     ## Session Model Switch (no bash needed)
-    Tell the user: use `/model <alias>` directly in chat.
+    Use `/model <alias>` directly in chat.
 
-    Available aliases:
-    - `flash`        → google/gemini-2.5-flash         ← System 1 default
-    - `flash-think`  → google/gemini-2.5-flash-thinking ← System 2
-    - `gemini-pro`   → google/gemini-pro
-    - `mini`         → openai/gpt-4o-mini
-    - `gpt4o`        → openai/gpt-4o
-    - `o3-mini`      → openai/o3-mini                  ← Hard logic
-    - `sonnet`       → anthropic/claude-sonnet-4-6      ← Deep work
-    - `opus`         → anthropic/claude-opus-4-6        ← Max quality
+    | Alias        | Model                                  | Tier      | ~Input cost/MTok |
+    |--------------|----------------------------------------|-----------|------------------|
+    | `flash-lite` | google/gemini-2.5-flash-lite           | Reflex    | ~$0.10           |
+    | `nano`       | openai/gpt-5-nano                      | Reflex    | ~$0.05           |
+    | `flash`      | google/gemini-2.5-flash                | System 1  | ~$0.15           |
+    | `haiku`      | anthropic/claude-haiku-4-5             | System 1  | ~$1.00           |
+    | `mini`       | openai/gpt-5-mini                      | System 1  | ~$0.25           |
+    | `flash-think`| google/gemini-2.5-flash-thinking       | System 2  | ~$0.15 + think   |
+    | `o3-mini`    | openai/o3-mini                         | System 2  | reasoning-based  |
+    | `sonnet`     | anthropic/claude-sonnet-4-6            | Deep Work | ~$3.00           |
+    | `gpt5`       | openai/gpt-5.2                         | Deep Work | ~$1.75           |
+    | `gemini-pro` | google/gemini-3.1-pro-preview          | Deep Work | ~$2.00           |
+    | `opus`       | anthropic/claude-opus-4-6              | Frontier  | ~$5.00           |
+    | `gpt5-pro`   | openai/gpt-5.2-pro                     | Frontier  | ~$21.00          |
 
     ---
 
     ## Change Global Default
     When user says "set default model to X" or "make X the default":
-
     ```bash
     openclaw config set agents.defaults.model.primary <full-model-ref>
     ```
-
     Then confirm:
     ```bash
     openclaw models status --plain
     ```
-
     Tell user to run `/new` to apply.
+
+    ---
+
+    ## Switch Routing Profile
+    When user says "use budget mode" / "switch to premium" etc.:
+    ```bash
+    openclaw config set agents.defaults.model.profile <profile-name>
+    ```
 
     ---
 
@@ -104,3 +148,11 @@ data:
     ```bash
     openclaw models status
     ```
+
+    ---
+
+    ## Deprecation Notes (March 2026)
+    - `google/gemini-2.0-flash` → **retiring June 1 2026** · migrate to `flash-lite` or `flash`
+    - `google/gemini-3-pro-preview` → **retired March 9 2026** · use `gemini-pro`
+    - `openai/gpt-4o` / `gpt-4o-mini` → superseded by `gpt5` / `nano`
+    - Always prefer non-preview aliases where latency and stability matter

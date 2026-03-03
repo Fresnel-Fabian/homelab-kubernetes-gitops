@@ -11,12 +11,14 @@ spec:
     matchLabels:
       app: openclaw
   strategy:
-    type: Recreate    # stateful — prevent split-brain on workspace PVC
+    type: Recreate
   template:
     metadata:
       labels:
         app: openclaw
     spec:
+      nodeSelector:
+        node-role.kubernetes.io/worker: "true"
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000

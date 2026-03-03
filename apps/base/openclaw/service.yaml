@@ -3,7 +3,10 @@ kind: Service
 metadata:
   name: openclaw
   namespace: agentic-tools
+  annotations:
+    metallb.universe.tf/address-pool: homelab-pool
 spec:
+  type: LoadBalancer
   selector:
     app: openclaw
   ports:
