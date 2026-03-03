@@ -31,8 +31,8 @@ spec:
         - sh
         - -c
         - |
-          mkdir -p /home/node/.openclaw/workspace/skills
-          cp -r /etc/openclaw/skills/. /home/node/.openclaw/workspace/skills/
+          mkdir -p /home/node/.openclaw/workspace/skills/model-manager
+          cp -L /etc/openclaw/skills/. /home/node/.openclaw/workspace/skills/model-manager/SKILL.md
         volumeMounts:
         - name: skills
           mountPath: /etc/openclaw/skills
