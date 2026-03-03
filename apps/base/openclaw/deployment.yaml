@@ -32,6 +32,7 @@ spec:
         - -c
         - |
           mkdir -p /home/node/.openclaw
+          chmod 700 /home/node/.openclaw
           cp -L /etc/openclaw/openclaw.json /home/node/.openclaw/openclaw.json
           mkdir -p /home/node/.openclaw/workspace/skills/model-manager
           cp -L /etc/openclaw/skills/SKILL.md /home/node/.openclaw/workspace/skills/model-manager/SKILL.md
