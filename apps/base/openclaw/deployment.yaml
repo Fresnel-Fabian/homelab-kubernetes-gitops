@@ -31,9 +31,14 @@ spec:
         - sh
         - -c
         - |
+          mkdir -p /home/node/.openclaw
+          cp -L /etc/openclaw/openclaw.json /home/node/.openclaw/openclaw.json
           mkdir -p /home/node/.openclaw/workspace/skills/model-manager
           cp -L /etc/openclaw/skills/SKILL.md /home/node/.openclaw/workspace/skills/model-manager/SKILL.md
         volumeMounts:
+        - name: config
+          mountPath: /etc/openclaw/openclaw.json
+          subPath: openclaw.json
         - name: skills
           mountPath: /etc/openclaw/skills
         - name: workspace
@@ -47,8 +52,6 @@ spec:
         env:
         - name: NODE_OPTIONS
           value: "--max-old-space-size=1024"
-        - name: OPENCLAW_CONFIG
-          value: "/etc/openclaw/openclaw.json"
         - name: ANTHROPIC_API_KEY
           valueFrom:
             secretKeyRef:
