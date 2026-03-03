@@ -8,16 +8,11 @@ data:
     {
       "gateway": {
         "port": 18789,
-        "bind": "all",
+        "bind": "lan",
         "mode": "local",
         "auth": {
           "mode": "password"
         }
-      },
-      "env": {
-        "ANTHROPIC_API_KEY": "${ANTHROPIC_API_KEY}",
-        "OPENAI_API_KEY":    "${OPENAI_API_KEY}",
-        "GEMINI_API_KEY":    "${GEMINI_API_KEY}"
       },
       "tools": {
         "web": {
@@ -71,8 +66,10 @@ data:
         "telegram": {
           "dmPolicy":         "pairing",
           "groupPolicy":      "open",
-          "autoSelectFamily": false,
-          "dnsResultOrder":   "ipv4first"
+          "network": {
+            "autoSelectFamily": false,
+            "dnsResultOrder":   "ipv4first"
+          }
         }
       }
     }
