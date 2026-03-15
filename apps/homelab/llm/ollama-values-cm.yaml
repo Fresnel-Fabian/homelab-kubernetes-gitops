@@ -20,6 +20,13 @@ data:
         value: "100"
       - name: GPU_MAX_HEAP_SIZE
         value: "100"
+      - name: HSA_ENABLE_SDMA
+        value: "0"
+      - name: GPU_MAX_HW_QUEUES
+        value: "8"
+      # Enable new engine — better AMD/ROCm performance in 0.17.7
+      - name: OLLAMA_NEW_ENGINE
+        value: "true"
       - name: OLLAMA_FLASH_ATTENTION
         value: "1"
       - name: OLLAMA_KV_CACHE_TYPE
@@ -28,8 +35,19 @@ data:
         value: "1"
       - name: OLLAMA_NUM_PARALLEL
         value: "1"
+      - name: OLLAMA_NUM_BATCH
+        value: "1024"
       - name: OLLAMA_CONTEXT_LENGTH
         value: "20480"
+      # Keep model loaded forever — eliminates 5.4s cold load
+      - name: OLLAMA_KEEP_ALIVE
+        value: "-1"
+      # Disable thinking by default — override per-request with /think
+      - name: OLLAMA_THINK
+        value: "0"
+      # Increase GPU overhead reservation slightly for stability
+      - name: OLLAMA_GPU_OVERHEAD
+        value: "536870912"
     nodeSelector:
       gpu.type: amd-rx6600xt
     tolerations:
@@ -38,9 +56,10 @@ data:
         effect: NoSchedule
     resources:
       requests:
-        cpu: 500m
-        memory: 2Gi
+        cpu: 2500m
+        memory: 4Gi
       limits:
+        cpu: 8000m
         memory: 8Gi
     persistentVolume:
       enabled: true
