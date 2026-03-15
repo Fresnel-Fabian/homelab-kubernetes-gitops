@@ -16,8 +16,6 @@ data:
     extraEnv:
       - name: HSA_OVERRIDE_GFX_VERSION
         value: "10.3.0"
-      - name: OLLAMA_HOST
-        value: "0.0.0.0"
       - name: GPU_MAX_ALLOC_PERCENT
         value: "100"
       - name: GPU_MAX_HEAP_SIZE
