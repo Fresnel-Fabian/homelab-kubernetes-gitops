@@ -24,9 +24,6 @@ data:
         value: "0"
       - name: GPU_MAX_HW_QUEUES
         value: "8"
-      # Enable new engine — better AMD/ROCm performance in 0.17.7
-      - name: OLLAMA_NEW_ENGINE
-        value: "true"
       - name: OLLAMA_FLASH_ATTENTION
         value: "1"
       - name: OLLAMA_KV_CACHE_TYPE
