@@ -35,13 +35,10 @@ data:
       - name: OLLAMA_NUM_BATCH
         value: "1024"
       - name: OLLAMA_CONTEXT_LENGTH
-        value: "20480"
+        value: "4096"
       # Keep model loaded forever — eliminates 5.4s cold load
       - name: OLLAMA_KEEP_ALIVE
         value: "-1"
-      # Disable thinking by default — override per-request with /think
-      - name: OLLAMA_THINK
-        value: "0"
       # Increase GPU overhead reservation slightly for stability
       - name: OLLAMA_GPU_OVERHEAD
         value: "536870912"
