@@ -10,3 +10,6 @@ prometheus:
           resources:
             requests:
               storage: 20Gi
+prometheusOperator:
+  endpointSlice:
+    enabled: true
