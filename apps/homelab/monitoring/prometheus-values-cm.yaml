@@ -14,8 +14,8 @@ data:
                 requests:
                   storage: 20Gi
     prometheusOperator:
-      endpointSlice:
-        enabled: true
+      kubeletEndpointsEnabled: false
+      kubeletEndpointSliceEnabled: true
 kind: ConfigMap
 metadata:
   creationTimestamp: null
