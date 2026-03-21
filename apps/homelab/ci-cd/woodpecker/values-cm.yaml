@@ -53,7 +53,7 @@ data:
         storageClass: local-path
 
       service:
-        type: ClusterIP
+        type: LoadBalancer
         port: 80
         # gRPC port for agent communication — chart defaults to 9000
         # No need to override unless you change it
