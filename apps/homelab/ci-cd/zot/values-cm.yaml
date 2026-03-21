@@ -7,6 +7,7 @@ data:
   values.yaml: |
     persistence:
       enabled: true
+      storageClassName: local-path
       size: 20Gi
     service:
       type: ClusterIP
