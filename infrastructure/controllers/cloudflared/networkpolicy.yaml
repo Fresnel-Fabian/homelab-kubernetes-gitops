@@ -60,9 +60,17 @@ spec:
           kubernetes.io/metadata.name: monitoring
     ports:
     - port: 9090
+
   - to:
     - namespaceSelector:
         matchLabels:
           kubernetes.io/metadata.name: agentic-tools
     ports:
     - port: 5678
+
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: ci-cd
+    ports:
+    - port: 80
