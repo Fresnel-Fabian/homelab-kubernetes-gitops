@@ -5,3 +5,5 @@ resources:
   - https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.34/deploy/local-path-storage.yaml
 patches:
   - path: deploy.yaml  # only override what differs from upstream
+  - path: storageclass-patch.yaml
+
