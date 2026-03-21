@@ -73,4 +73,4 @@ spec:
         matchLabels:
           kubernetes.io/metadata.name: ci-cd
     ports:
-    - port: 80
+    - port: 8000
