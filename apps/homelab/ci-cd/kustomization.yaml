@@ -1,8 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - monitoring/
-  - logging/
-  - agentic-tools/
-  - llm/
-  - ci-cd/
+  - namespace.yaml
+  - woodpecker
+  - zot
