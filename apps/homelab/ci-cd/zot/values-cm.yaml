@@ -11,7 +11,7 @@ data:
       storage: 20Gi
       # Empty string = use cluster default (local-path)
       # Set explicitly if your default ever changes
-      storageClassName: ""
+      storageClassName: local-path
 
     service:
       type: ClusterIP
