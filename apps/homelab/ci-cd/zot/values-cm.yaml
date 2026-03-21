@@ -5,8 +5,7 @@ metadata:
   namespace: flux-system
 data:
   values.yaml: |
-    persistence:
-      enabled: true
+    pvc:
       storageClassName: local-path
       size: 20Gi
     service:
