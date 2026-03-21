@@ -25,6 +25,13 @@ data:
           connectTimeout: 10s
           noTLSVerify: false
 
+      # woodpecker
+      - hostname: ci.fresnelfabian.com
+        service: http://ci-cd-woodpecker-server.ci-cd.svc.cluster.local:80
+        originRequest:
+          connectTimeout: 10s
+          noTLSVerify: false
+
       # Catch-all — required, must be last
       - service: http_status:404
 
