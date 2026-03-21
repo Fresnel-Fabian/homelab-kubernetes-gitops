@@ -5,21 +5,64 @@ metadata:
   namespace: flux-system
 data:
   values.yaml: |
+
+    # Storage — uses cluster default storage class (local-path)
     pvc:
-      storageClassName: local-path
-      size: 20Gi
+      storage: 20Gi
+      # Empty string = use cluster default (local-path)
+      # Set explicitly if your default ever changes
+      storageClassName: ""
+
     service:
       type: ClusterIP
       port: 5000
+
+    # Resource limits — Zot is very lightweight
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 250m
+        memory: 256Mi
+
+    # Mount the config as a ConfigMap volume
     mountConfig: true
+
     configFiles:
       config.json: |-
         {
-          "storage": { "rootDirectory": "/var/lib/registry" },
-          "http": { "address": "0.0.0.0", "port": "5000" },
-          "log": { "level": "info" },
+          "distSpecVersion": "1.1.1",
+          "storage": {
+            "rootDirectory": "/var/lib/registry",
+            "gc": true,
+            "gcDelay": "1h",
+            "gcInterval": "6h"
+          },
+          "http": {
+            "address": "0.0.0.0",
+            "port": "5000"
+          },
+          "log": {
+            "level": "info"
+          },
           "extensions": {
-            "search": { "enable": true },
-            "ui": { "enable": true }
+            "search": {
+              "enable": true,
+              "cve": {
+                "updateInterval": "24h"
+              }
+            },
+            "ui": {
+              "enable": true
+            },
+            "scrub": {
+              "enable": true,
+              "interval": "24h"
+            },
+            "lint": {
+              "enable": true,
+              "mandatoryAnnotations": []
+            }
           }
         }
