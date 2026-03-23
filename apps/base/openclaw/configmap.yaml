@@ -25,7 +25,7 @@ data:
         "mode": "merge",
         "providers": {
           "ollama": {
-            "baseUrl": "http://llm-ollama.llm.svc.cluster.local:11434",
+            "baseUrl": "http://llm-ollama.llm.svc.cluster.local:11434/v1",
             "api": "openai-completions",
             "models": [
               {
