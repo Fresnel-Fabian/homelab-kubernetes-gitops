@@ -5,3 +5,4 @@ resources:
   - helmrepository.yaml
   - ollama-values-cm.yaml
   - ollama.yaml
+  - servicemonitor.yaml
