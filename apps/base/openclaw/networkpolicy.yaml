@@ -10,9 +10,8 @@ spec:
   policyTypes: [Ingress, Egress]
   ingress:
   - from:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: ingress-nginx
+    - ipBlock:
+        cidr: 192.168.0.0/16    # allow your whole LAN
     ports:
     - port: 18789
   egress:
