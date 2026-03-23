@@ -12,7 +12,7 @@ data:
         "mode": "local",
         "auth": {
           "mode": "password"
-        }
+        },
         "controlUi": {
           "allowedOrigins": [
             "http://localhost:18789",
