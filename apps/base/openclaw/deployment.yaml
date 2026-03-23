@@ -64,6 +64,7 @@ spec:
       containers:
       - name: openclaw
         image: ghcr.io/openclaw/openclaw:2026.3.22 # {"$imagepolicy": "flux-system:openclaw"}
+        command: ["openclaw", "gateway"] 
         ports:
         - name: gateway
           containerPort: 18789
