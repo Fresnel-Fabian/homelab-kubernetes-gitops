@@ -17,7 +17,7 @@ spec:
       author:
         name: flux-bot
         email: flux@homelab
-      messageTemplate: "chore(openclaw): update image to {{range .Changed.Images}}{{.}}{{end}}"
+      messageTemplate: "chore(openclaw): automated image update"
     push:
       branch: main
   update:
