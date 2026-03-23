@@ -1,10 +1,11 @@
+# apps/base/openclaw/image-update-automation.yaml
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageUpdateAutomation
 metadata:
   name: openclaw
   namespace: flux-system
 spec:
-  interval: 12h
+  interval: 1h
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -16,7 +17,7 @@ spec:
       author:
         name: flux-bot
         email: flux@homelab
-      messageTemplate: "chore(openclaw): update image to {{range .Updated.Images}}{{.}}{{end}}"
+      messageTemplate: "chore(openclaw): update image to {{range .Changed.Images}}{{.}}{{end}}"
     push:
       branch: main
   update:
