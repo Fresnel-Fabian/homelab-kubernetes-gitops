@@ -46,7 +46,7 @@ spec:
           mountPath: /home/node/.openclaw
       containers:
       - name: openclaw
-        image: ghcr.io/openclaw/openclaw:latest
+        image: ghcr.io/openclaw/openclaw:2026.3.22 # {"$imagepolicy": "flux-system:openclaw"}
         ports:
         - name: gateway
           containerPort: 18789
@@ -73,11 +73,21 @@ spec:
             secretKeyRef:
               name: openclaw-secret
               key: gateway-password
-        - name: TELEGRAM_BOT_TOKEN
+        - name: TELEGRAM_I_CLAW_BOT_TOKEN
           valueFrom:
             secretKeyRef:
               name: openclaw-secret
-              key: telegram-bot-token
+              key: telegram-bot-token-i-claw-bot
+        - name: TELEGRAM_TO_USE_CLAW_BOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: openclaw-secret
+              key: telegram-bot-token-To_use_claw_bot
+        - name: TELEGRAM_TOM_S_ASSISTANT_BOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: openclaw-secret
+              key: telegram-bot-token-tom_s_assistant_bot
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:

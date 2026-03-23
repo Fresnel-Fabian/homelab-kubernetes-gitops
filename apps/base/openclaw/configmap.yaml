@@ -14,6 +14,24 @@ data:
           "mode": "password"
         }
       },
+      "models": {
+        "mode": "merge",
+        "providers": {
+          "ollama": {
+            "baseUrl": "http://llm-ollama.llm.svc.cluster.local:11434",
+            "api": "openai-completions",
+            "models": [
+              {
+                "id": "ollama/qwen3:8b",
+                "name": "qwen3:8b",
+                "cost": { "input": 0, "output": 0 },
+                "contextWindow": 128000,
+                "maxTokens": 8000
+              }
+            ]
+          }
+        }
+      },
       "tools": {
         "web": {
           "search": {
@@ -25,17 +43,43 @@ data:
         }
       },
       "agents": {
+        "list": [
+          {
+            "id": "i_claw_bot",
+            "default": true,
+            "name": "i_claw_bot",
+            "workspace": "~/.openclaw/workspace-i_claw_bot",
+            "agentDir": "~/.openclaw/agents/i_claw_bot/agent",
+            "model": "ollama/qwen3:8b"
+          },
+          {
+            "id": "to_use_claw_bot",
+            "name": "To_use_claw_bot",
+            "workspace": "~/.openclaw/workspace-to_use_claw_bot",
+            "agentDir": "~/.openclaw/agents/to_use_claw_bot/agent",
+            "model": "ollama/qwen3:8b"
+          },
+          {
+            "id": "tom_s_assistant_bot",
+            "name": "tom_s_assistant_bot",
+            "workspace": "~/.openclaw/workspace-tom_s_assistant_bot",
+            "agentDir": "~/.openclaw/agents/tom_s_assistant_bot/agent",
+            "model": "ollama/qwen3:8b"
+          }
+        ],
         "defaults": {
           "model": {
-            "primary": "google/gemini-2.5-flash-lite",
+            "primary": "ollama/qwen3:8b",
             "fallbacks": [
+              "google/gemini-2.5-flash-lite",
               "openai/gpt-5-nano",
               "anthropic/claude-haiku-4-5",
               "google/gemini-2.5-flash",
               "openai/gpt-5-mini"
-            ]
+              ]
           },
           "models": {
+            "ollama/qwen3:8b":                       { "alias": "qwen3"       },
             "google/gemini-2.5-flash-lite":          { "alias": "flash-lite"  },
             "google/gemini-3.1-flash-lite-preview":  { "alias": "flash3-lite" },
             "openai/gpt-5-nano":                     { "alias": "nano"        },
@@ -51,10 +95,24 @@ data:
             "openai/gpt-5.2-pro":                    { "alias": "gpt5-pro"    }
           },
           "sandbox": {
-            "mode": "non-main"
+            "mode": "off"
           }
         }
       },
+      "bindings": [
+        {
+          "agentId": "i_claw_bot",
+          "match": { "channel": "telegram", "accountId": "i_claw_bot" }
+        },
+        {
+          "agentId": "to_use_claw_bot",
+          "match": { "channel": "telegram", "accountId": "to_use_claw_bot" }
+        },
+        {
+          "agentId": "tom_s_assistant_bot",
+          "match": { "channel": "telegram", "accountId": "tom_s_assistant_bot" }
+        }
+      ],
       "auth": {
         "cooldowns": {
           "billingBackoffHours": 5,
@@ -64,11 +122,22 @@ data:
       },
       "channels": {
         "telegram": {
-          "dmPolicy":         "pairing",
-          "groupPolicy":      "open",
+          "dmPolicy":    "pairing",
+          "groupPolicy": "open",
           "network": {
             "autoSelectFamily": false,
             "dnsResultOrder":   "ipv4first"
+          },
+          "accounts": {
+            "i_claw_bot": {
+              "botToken": "${TELEGRAM_I_CLAW_BOT_TOKEN}"
+            },
+            "to_use_claw_bot": {
+              "botToken": "${TELEGRAM_TO_USE_CLAW_BOT_TOKEN}"
+            },
+            "tom_s_assistant_bot": {
+              "botToken": "${TELEGRAM_TOM_S_ASSISTANT_BOT_TOKEN}"
+            }
           }
         }
       }
