@@ -7,3 +7,5 @@ resources:
   - service.yaml
   - pvc.yaml
   - networkpolicy.yaml
+  - image-policy.yaml
+  - image-update-automation.yaml
