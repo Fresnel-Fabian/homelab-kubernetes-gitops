@@ -42,6 +42,8 @@ data:
       # Increase GPU overhead reservation slightly for stability
      # - name: OLLAMA_GPU_OVERHEAD
      #   value: "536870912"
+      - name: OLLAMA_METRICS
+        value: "true"
     nodeSelector:
       gpu.type: amd-rx6600xt
     tolerations:
