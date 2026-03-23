@@ -13,6 +13,13 @@ data:
         "auth": {
           "mode": "password"
         }
+        "controlUi": {
+          "allowedOrigins": [
+            "http://localhost:18789",
+            "http://127.0.0.1:18789",
+            "http://192.168.0.244:18789"
+          ]
+        }
       },
       "models": {
         "mode": "merge",
@@ -130,13 +137,16 @@ data:
           },
           "accounts": {
             "i_claw_bot": {
-              "botToken": "${TELEGRAM_I_CLAW_BOT_TOKEN}"
+              "botToken": "${TELEGRAM_I_CLAW_BOT_TOKEN}",
+              "groupPolicy": "open"
             },
             "to_use_claw_bot": {
-              "botToken": "${TELEGRAM_TO_USE_CLAW_BOT_TOKEN}"
+              "botToken": "${TELEGRAM_TO_USE_CLAW_BOT_TOKEN}",
+              "groupPolicy": "open"
             },
             "tom_s_assistant_bot": {
-              "botToken": "${TELEGRAM_TOM_S_ASSISTANT_BOT_TOKEN}"
+              "botToken": "${TELEGRAM_TOM_S_ASSISTANT_BOT_TOKEN}",
+              "groupPolicy": "open"
             }
           }
         }
