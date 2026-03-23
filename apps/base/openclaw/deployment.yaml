@@ -31,11 +31,28 @@ spec:
         - sh
         - -c
         - |
+          # Set permissions
           mkdir -p /home/node/.openclaw
           chmod 700 /home/node/.openclaw
-          cp -L /etc/openclaw/openclaw.json /home/node/.openclaw/openclaw.json
-          mkdir -p /home/node/.openclaw/workspace/skills/model-manager
-          cp -L /etc/openclaw/skills/SKILL.md /home/node/.openclaw/workspace/skills/model-manager/SKILL.md
+
+          # Copy config
+          cp -L /etc/openclaw/openclaw.json \
+                /home/node/.openclaw/openclaw.json
+
+          # Create all agent workspaces and skill directories
+          mkdir -p /home/node/.openclaw/workspace-i_claw_bot/skills/model-manager
+          mkdir -p /home/node/.openclaw/workspace-to_use_claw_bot/skills/model-manager
+          mkdir -p /home/node/.openclaw/workspace-tom_s_assistant_bot/skills/model-manager
+
+          # Copy skill to all agent workspaces
+          cp -L /etc/openclaw/skills/SKILL.md \
+                /home/node/.openclaw/workspace-i_claw_bot/skills/model-manager/SKILL.md
+          cp -L /etc/openclaw/skills/SKILL.md \
+                /home/node/.openclaw/workspace-to_use_claw_bot/skills/model-manager/SKILL.md
+          cp -L /etc/openclaw/skills/SKILL.md \
+                /home/node/.openclaw/workspace-tom_s_assistant_bot/skills/model-manager/SKILL.md
+
+          echo "Done"
         volumeMounts:
         - name: config
           mountPath: /etc/openclaw/openclaw.json
