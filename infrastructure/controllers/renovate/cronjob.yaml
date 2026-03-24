@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: renovate
+  namespace: renovate
+spec:
+  schedule: "0 5 * * 1"  # Every Monday at 05:00 UTC — aligns with renovate.json schedule
+  concurrencyPolicy: Forbid  # Never overlap runs
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 1800  # Kill if running longer than 30 minutes
+      backoffLimit: 1  # Retry once on failure, then stop
+      template:
+        spec:
+          restartPolicy: Never
+          automountServiceAccountToken: false  # Renovate doesn't need k8s API access
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: renovate
+              image: ghcr.io/renovatebot/renovate:39  # Major version tag — auto-updates within v39.x
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: false  # Renovate needs to write temp files during clone/analysis
+                capabilities:
+                  drop: ["ALL"]
+              env:
+                - name: RENOVATE_PLATFORM
+                  value: "github"
+                - name: RENOVATE_REPOSITORIES
+                  value: "Fresnel-Fabian/homelab-kubernetes-gitops"
+                - name: RENOVATE_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: renovate-env
+                      key: RENOVATE_TOKEN
+                - name: LOG_LEVEL
+                  value: "info"
+              resources:
+                requests:
+                  cpu: 250m
+                  memory: 512Mi
+                limits:
+                  cpu: "1"
+                  memory: 1Gi
