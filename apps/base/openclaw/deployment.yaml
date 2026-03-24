@@ -63,7 +63,7 @@ spec:
           mountPath: /home/node/.openclaw
       containers:
       - name: openclaw
-        image: ghcr.io/openclaw/openclaw:2026.3.22 # {"$imagepolicy": "flux-system:openclaw"}
+        image: ghcr.io/openclaw/openclaw:2026.3.23 # {"$imagepolicy": "flux-system:openclaw"}
         ports:
         - name: gateway
           containerPort: 18789
