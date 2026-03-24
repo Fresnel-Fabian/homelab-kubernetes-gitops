@@ -14,20 +14,25 @@
   },
   "packageRules": [
     {
-      "description": "Group all Helm chart updates into a single PR per chart",
-      "matchDatasources": ["helm"],
-      "groupName": "helm-charts",
+      "description": "Flux controllers — group together since they're versioned as a unit",
+      "matchPackagePatterns": ["^ghcr\\.io/fluxcd/"],
+      "groupName": "flux-controllers",
       "schedule": ["before 6am on monday"]
     },
     {
-      "description": "Group all container image updates",
+      "description": "Helm charts — one PR per chart",
+      "matchDatasources": ["helm"],
+      "groupName": null,
+      "schedule": ["before 6am on monday"]
+    },
+    {
+      "description": "Container images — one PR per image",
       "matchDatasources": ["docker"],
-      "groupName": "container-images",
+      "groupName": null,
       "schedule": ["before 6am on monday"]
     }
   ],
-  "prConcurrentLimit": 5,
-  "prHourlyLimit": 2,
-  "labels": ["renovate", "automated"],
-  "assignees": []
+  "prConcurrentLimit": 10,
+  "prHourlyLimit": 4,
+  "labels": ["renovate", "automated"]
 }
