@@ -155,6 +155,11 @@ export GITHUB_TOKEN=<token>
 export GITHUB_USER=<username>
 ```
 
+### Add Git pre-commit hook
+```bash
+git config core.hooksPath .githooks
+```
+
 ### Run Bootstrap
 
 ```bash

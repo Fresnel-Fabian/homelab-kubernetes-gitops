@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+# .git/hooks/pre-commit
+# Validates all staged YAML/JSON files in a Flux GitOps repo.
+# Reads from the git index (staged), not the working tree.
+
+set -euo pipefail
+
+ERRORS=0
+CHECKED=0
+
+# ── Colours ───────────────────────────────────────────────────────────────────
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+pass() { echo -e "${GREEN}✓${NC} $1"; }
+fail() { echo -e "${RED}✗${NC} $1"; ERRORS=$((ERRORS + 1)); }
+warn() { echo -e "${YELLOW}!${NC} $1"; }
+
+# ── Get staged files ──────────────────────────────────────────────────────────
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR)
+
+if [ -z "$STAGED_FILES" ]; then
+  exit 0
+fi
+
+# ── YAML + embedded JSON validator ────────────────────────────────────────────
+validate_yaml() {
+  local file="$1"
+  git show ":${file}" | python3 - <<'PYEOF'
+import sys, json, yaml
+
+content = sys.stdin.read()
+path = sys.argv[1] if len(sys.argv) > 1 else "stdin"
+
+# 1. Parse YAML — catches syntax errors
+try:
+    docs = list(yaml.safe_load_all(content))
+except yaml.YAMLError as e:
+    print(f"  YAML syntax error: {e}", file=sys.stderr)
+    sys.exit(1)
+
+# 2. For each document, check if it's a ConfigMap with JSON values
+json_errors = []
+for doc in docs:
+    if not isinstance(doc, dict):
+        continue
+    if doc.get("kind") != "ConfigMap":
+        continue
+    data = doc.get("data", {})
+    for key, value in data.items():
+        if not isinstance(value, str):
+            continue
+        stripped = value.strip()
+        # Only attempt JSON parse if value looks like JSON object or array
+        if not (stripped.startswith("{") or stripped.startswith("[")):
+            continue
+        try:
+            json.loads(value)
+        except json.JSONDecodeError as e:
+            json_errors.append(f"  ConfigMap key '{key}' contains invalid JSON: {e}")
+
+if json_errors:
+    for err in json_errors:
+        print(err, file=sys.stderr)
+    sys.exit(2)
+
+sys.exit(0)
+PYEOF
+}
+
+# ── JSON validator ────────────────────────────────────────────────────────────
+validate_json() {
+  local file="$1"
+  git show ":${file}" | python3 -c "
+import sys, json
+try:
+    json.load(sys.stdin)
+except json.JSONDecodeError as e:
+    print(f'  JSON error: {e}', file=sys.stderr)
+    sys.exit(1)
+"
+}
+
+# ── kubeconform (optional) ────────────────────────────────────────────────────
+KUBECONFORM=$(command -v kubeconform 2>/dev/null || true)
+
+validate_schema() {
+  local file="$1"
+  if [ -z "$KUBECONFORM" ]; then
+    return 0
+  fi
+  # kubeconform reads from stdin; -summary suppresses per-resource noise
+  git show ":${file}" | kubeconform \
+    -schema-location default \
+    -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
+    -ignore-missing-schemas \
+    -output tap \
+    -summary \
+    /dev/stdin 2>&1
+}
+
+# ── Main loop ─────────────────────────────────────────────────────────────────
+echo ""
+echo "── Pre-commit validation ──────────────────────────────────────────"
+
+while IFS= read -r file; do
+  # Skip deleted files (diff-filter=ACMR excludes D, but be defensive)
+  [[ ! "$file" =~ \.(yaml|yml|json)$ ]] && continue
+
+  CHECKED=$((CHECKED + 1))
+  echo ""
+  echo "  $file"
+
+  case "$file" in
+    *.yaml|*.yml)
+      if validate_yaml "$file"; then
+        pass "YAML valid"
+        if [ -n "$KUBECONFORM" ]; then
+          if validate_schema "$file" > /dev/null 2>&1; then
+            pass "Schema valid"
+          else
+            # Non-fatal: schema validation fails on Flux CRDs without catalog
+            warn "Schema: $(validate_schema "$file" 2>&1 | tail -1)"
+          fi
+        fi
+      else
+        fail "Invalid: $file"
+      fi
+      ;;
+    *.json)
+      if validate_json "$file"; then
+        pass "JSON valid"
+      else
+        fail "Invalid: $file"
+      fi
+      ;;
+  esac
+
+done <<< "$STAGED_FILES"
+
+# ── Summary ───────────────────────────────────────────────────────────────────
+echo ""
+echo "── Results ────────────────────────────────────────────────────────"
+echo "   Checked : $CHECKED file(s)"
+echo "   Errors  : $ERRORS"
+echo ""
+
+if [ "$ERRORS" -gt 0 ]; then
+  echo -e "${RED}Commit blocked — fix errors above.${NC}"
+  exit 1
+fi
+
+exit 0
