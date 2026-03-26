@@ -14,7 +14,7 @@ data:
       storageClassName: local-path
 
     service:
-      type: ClusterIP
+      type: LoadBalancer
       port: 5000
 
     # Resource limits — Zot is very lightweight
