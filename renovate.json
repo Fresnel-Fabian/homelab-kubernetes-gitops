@@ -4,35 +4,56 @@
     "config:recommended"
   ],
   "flux": {
-    "fileMatch": ["\\.ya?ml$"]
+    "fileMatch": [
+      "\\.ya?ml$"
+    ]
   },
   "helm-values": {
-    "fileMatch": ["\\.ya?ml$"]
+    "fileMatch": [
+      "\\.ya?ml$"
+    ]
   },
   "kubernetes": {
-    "fileMatch": ["\\.ya?ml$"]
+    "fileMatch": [
+      "\\.ya?ml$"
+    ]
   },
   "packageRules": [
     {
       "description": "Flux controllers — group together since they're versioned as a unit",
-      "matchPackagePatterns": ["^ghcr\\.io/fluxcd/"],
       "groupName": "flux-controllers",
-      "schedule": ["before 6am on monday"]
+      "schedule": [
+        "before 6am on monday"
+      ],
+      "matchPackageNames": [
+        "/^ghcr\\.io/fluxcd//"
+      ]
     },
     {
       "description": "Helm charts — one PR per chart",
-      "matchDatasources": ["helm"],
+      "matchDatasources": [
+        "helm"
+      ],
       "groupName": null,
-      "schedule": ["before 6am on monday"]
+      "schedule": [
+        "before 6am on monday"
+      ]
     },
     {
       "description": "Container images — one PR per image",
-      "matchDatasources": ["docker"],
+      "matchDatasources": [
+        "docker"
+      ],
       "groupName": null,
-      "schedule": ["before 6am on monday"]
+      "schedule": [
+        "before 6am on monday"
+      ]
     }
   ],
   "prConcurrentLimit": 10,
   "prHourlyLimit": 4,
-  "labels": ["renovate", "automated"]
+  "labels": [
+    "renovate",
+    "automated"
+  ]
 }
