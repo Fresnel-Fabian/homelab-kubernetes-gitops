@@ -11,7 +11,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: community-charts
-      version: "1.16.29"
+      version: "1.16.31"
   interval: 30m
   targetNamespace: agentic-tools
   storageNamespace: agentic-tools
