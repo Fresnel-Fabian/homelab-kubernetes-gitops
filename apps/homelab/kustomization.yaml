@@ -6,3 +6,4 @@ resources:
   - agentic-tools/
   - llm/
   - ci-cd/
+  - staging/
