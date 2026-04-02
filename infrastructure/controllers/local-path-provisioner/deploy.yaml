@@ -38,7 +38,7 @@ spec:
               fieldPath: metadata.namespace
         - name: CONFIG_MOUNT_PATH
           value: /etc/config/
-        image: rancher/local-path-provisioner:v0.0.34
+        image: rancher/local-path-provisioner:v0.0.35
         imagePullPolicy: IfNotPresent
         name: local-path-provisioner
         terminationMessagePath: /dev/termination-log
