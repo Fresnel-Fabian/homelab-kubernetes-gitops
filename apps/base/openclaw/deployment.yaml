@@ -69,10 +69,7 @@ spec:
           containerPort: 18789
         env:
         - name: NODE_OPTIONS
-          value: >-
-            --max-old-space-size=2048
-            --max-semi-space-size=64
-            --optimize-for-size
+          value: "--max-old-space-size=2048 --max-semi-space-size=64"
         - name: ANTHROPIC_API_KEY
           valueFrom:
             secretKeyRef:
