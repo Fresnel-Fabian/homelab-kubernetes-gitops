@@ -115,10 +115,6 @@ data:
           "compaction": {
             "mode": "safeguard"
           },
-          "session": {
-            "historyLimit": 100,
-            "dmHistoryLimit": 50
-          },
           "heartbeat": {
             "every": "30m"
           }
