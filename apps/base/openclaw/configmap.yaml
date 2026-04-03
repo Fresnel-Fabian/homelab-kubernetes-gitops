@@ -50,6 +50,7 @@ data:
           },
           "fetch": {
             "cacheTtlMinutes": 30
+          }
         }
       },
       "agents": {
@@ -117,7 +118,7 @@ data:
           "session": {
             "historyLimit": 100,
             "dmHistoryLimit": 50
-          }
+          },
           "heartbeat": {
             "every": "30m"
           }
