@@ -12,20 +12,29 @@ data:
         number: 1
       models:
         pull:
-          - qwen3:8b
+          - dolphin3:8b-llama3.1-q4_K_M
+          - mxbai-embed-large:v1
     extraEnv:
       - name: HSA_OVERRIDE_GFX_VERSION
         value: "10.3.0"
       - name: GPU_MAX_ALLOC_PERCENT
-        value: "100"
+        value: "92"
       - name: GPU_MAX_HEAP_SIZE
-        value: "100"
+        value: "92"
       - name: OLLAMA_MAX_LOADED_MODELS
         value: "1"
       - name: OLLAMA_NUM_PARALLEL
         value: "1"
+      - name: OLLAMA_MAX_QUEUE
+        value: "32"
       - name: OLLAMA_CONTEXT_LENGTH
-        value: "20480"
+        value: "8192"
+      - name: OLLAMA_KEEP_ALIVE
+        value: "2m"
+      - name: OLLAMA_FLASH_ATTENTION
+        value: "0"
+      - name: OLLAMA_KV_CACHE_TYPE
+        value: "q8_0"
       - name: OLLAMA_METRICS
         value: "true"
     nodeSelector:
@@ -36,11 +45,11 @@ data:
         effect: NoSchedule
     resources:
       requests:
-        cpu: 2500m
-        memory: 4Gi
+        cpu: 2000m
+        memory: 2Gi
       limits:
         cpu: 8000m
-        memory: 8Gi
+        memory: 4Gi
     persistentVolume:
       enabled: true
       size: 20Gi

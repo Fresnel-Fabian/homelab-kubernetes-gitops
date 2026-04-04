@@ -29,14 +29,21 @@ data:
             "api": "openai-completions",
             "models": [
               {
-                "id": "ollama/qwen3:8b",
-                "name": "qwen3:8b",
+                "id": "ollama/dolphin3:8b-llama3.1-q4_K_M",
+                "name": "dolphin3:8b-llama3.1-q4_K_M",
                 "cost": { "input": 0, "output": 0 },
-                "contextWindow": 128000,
-                "maxTokens": 8000
+                "contextWindow": 8192,
+                "maxTokens": 2048
               }
             ]
           }
+        }
+      },
+      "memory": {
+        "embeddings": {
+          "provider": "ollama",
+          "model": "ollama/mxbai-embed-large:v1",
+          "baseUrl": "http://llm-ollama.llm.svc.cluster.local:11434/v1"
         }
       },
       "tools": {
@@ -61,26 +68,26 @@ data:
             "name": "i_claw_bot",
             "workspace": "~/.openclaw/workspace-i_claw_bot",
             "agentDir": "~/.openclaw/agents/i_claw_bot/agent",
-            "model": "ollama/qwen3:8b"
+            "model": "ollama/dolphin3:8b-llama3.1-q4_K_M"
           },
           {
             "id": "to_use_claw_bot",
             "name": "To_use_claw_bot",
             "workspace": "~/.openclaw/workspace-to_use_claw_bot",
             "agentDir": "~/.openclaw/agents/to_use_claw_bot/agent",
-            "model": "ollama/qwen3:8b"
+            "model": "ollama/dolphin3:8b-llama3.1-q4_K_M"
           },
           {
             "id": "tom_s_assistant_bot",
             "name": "tom_s_assistant_bot",
             "workspace": "~/.openclaw/workspace-tom_s_assistant_bot",
             "agentDir": "~/.openclaw/agents/tom_s_assistant_bot/agent",
-            "model": "ollama/qwen3:8b"
+            "model": "ollama/dolphin3:8b-llama3.1-q4_K_M"
           }
         ],
         "defaults": {
           "model": {
-            "primary": "ollama/qwen3:8b",
+            "primary": "ollama/dolphin3:8b-llama3.1-q4_K_M",
             "fallbacks": [
               "google/gemini-2.5-flash-lite",
               "openai/gpt-5-nano",
@@ -90,27 +97,27 @@ data:
             ]
           },
           "models": {
-            "ollama/qwen3:8b":                      { "alias": "qwen3"       },
-            "google/gemini-2.5-flash-lite":         { "alias": "flash-lite"  },
+            "ollama/dolphin3:8b-llama3.1-q4_K_M": { "alias": "dolphin" },
+            "google/gemini-2.5-flash-lite": { "alias": "flash-lite" },
             "google/gemini-3.1-flash-lite-preview": { "alias": "flash3-lite" },
-            "openai/gpt-5-nano":                    { "alias": "nano"        },
-            "google/gemini-2.5-flash":              { "alias": "flash"       },
-            "openai/gpt-5-mini":                    { "alias": "mini"        },
-            "anthropic/claude-haiku-4-5":           { "alias": "haiku"       },
-            "google/gemini-2.5-flash-thinking":     { "alias": "flash-think" },
-            "openai/o3-mini":                       { "alias": "o3-mini"     },
-            "openai/gpt-5.2":                       { "alias": "gpt5"        },
-            "anthropic/claude-sonnet-4-6":          { "alias": "sonnet"      },
-            "google/gemini-3.1-pro-preview":        { "alias": "gemini-pro"  },
-            "anthropic/claude-opus-4-6":            { "alias": "opus"        },
-            "openai/gpt-5.2-pro":                   { "alias": "gpt5-pro"    }
+            "openai/gpt-5-nano": { "alias": "nano" },
+            "google/gemini-2.5-flash": { "alias": "flash" },
+            "openai/gpt-5-mini": { "alias": "mini" },
+            "anthropic/claude-haiku-4-5": { "alias": "haiku" },
+            "google/gemini-2.5-flash-thinking": { "alias": "flash-think" },
+            "openai/o3-mini": { "alias": "o3-mini" },
+            "openai/gpt-5.2": { "alias": "gpt5" },
+            "anthropic/claude-sonnet-4-6": { "alias": "sonnet" },
+            "google/gemini-3.1-pro-preview": { "alias": "gemini-pro" },
+            "anthropic/claude-opus-4-6": { "alias": "opus" },
+            "openai/gpt-5.2-pro": { "alias": "gpt5-pro" }
           },
           "sandbox": {
             "mode": "off"
           },
           "contextPruning": {
             "mode": "cache-ttl",
-            "ttl": "2h"
+            "ttl": "1h"
           },
           "compaction": {
             "mode": "safeguard"
@@ -137,32 +144,42 @@ data:
       "auth": {
         "cooldowns": {
           "billingBackoffHours": 5,
-          "billingMaxHours":     24,
-          "failureWindowHours":  24
+          "billingMaxHours": 24,
+          "failureWindowHours": 24
         }
       },
       "channels": {
         "telegram": {
-          "streaming": "partial",
-          "textChunkLimit": 4096,
-          "chunkMode": "newline",
-          "dmPolicy": "pairing",
-          "groupPolicy": "open",
           "network": {
             "autoSelectFamily": false,
-            "dnsResultOrder":   "ipv4first"
+            "dnsResultOrder": "ipv4first"
           },
           "accounts": {
             "i_claw_bot": {
               "botToken": "${TELEGRAM_I_CLAW_BOT_TOKEN}",
+              "streaming": "off",
+              "typingIndicator": true,
+              "textChunkLimit": 4096,
+              "chunkMode": "newline",
+              "dmPolicy": "pairing",
               "groupPolicy": "open"
             },
             "to_use_claw_bot": {
               "botToken": "${TELEGRAM_TO_USE_CLAW_BOT_TOKEN}",
+              "streaming": "off",
+              "typingIndicator": true,
+              "textChunkLimit": 4096,
+              "chunkMode": "newline",
+              "dmPolicy": "pairing",
               "groupPolicy": "open"
             },
             "tom_s_assistant_bot": {
               "botToken": "${TELEGRAM_TOM_S_ASSISTANT_BOT_TOKEN}",
+              "streaming": "off",
+              "typingIndicator": true,
+              "textChunkLimit": 4096,
+              "chunkMode": "newline",
+              "dmPolicy": "pairing",
               "groupPolicy": "open"
             }
           }
