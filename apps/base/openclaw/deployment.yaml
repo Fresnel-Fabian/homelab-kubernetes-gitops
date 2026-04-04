@@ -24,39 +24,40 @@ spec:
         runAsUser: 1000
         fsGroup: 1000
       initContainers:
-      - name: copy-skills
-        image: busybox:1.36
-        command:
-        - sh
-        - -c
-        - |
-          set -e
+        - name: copy-skills
+          image: alpine:3.18
+          command:
+            - sh
+            - -c
+            - |
+              set -ex
 
-          mkdir -p /home/node/.openclaw
-          chmod 700 /home/node/.openclaw
+              # Create base OpenClaw directory with proper permissions
+              mkdir -p /home/node/.openclaw
+              chmod 700 /home/node/.openclaw
 
-          cp -L /etc/openclaw/openclaw.json /home/node/.openclaw/openclaw.json
+              # Copy main OpenClaw config
+              cp -L /etc/openclaw/openclaw.json /home/node/.openclaw/openclaw.json
 
-          mkdir -p /home/node/.openclaw/workspace-i_claw_bot/skills/model-manager
-          mkdir -p /home/node/.openclaw/workspace-to_use_claw_bot/skills/model-manager
-          mkdir -p /home/node/.openclaw/workspace-tom_s_assistant_bot/skills/model-manager
+              # Create workspaces and skill directories for each agent
+              mkdir -p /home/node/.openclaw/workspace-i_claw_bot/skills/model-manager
+              mkdir -p /home/node/.openclaw/workspace-to_use_claw_bot/skills/model-manager
+              mkdir -p /home/node/.openclaw/workspace-tom_s_assistant_bot/skills/model-manager
 
-          cp -L /etc/openclaw/skills/SKILL.md /home/node/.openclaw/workspace-i_claw_bot/skills/model-manager/SKILL.md
-          cp -L /etc/openclaw/skills/SKILL.md /home/node/.openclaw/workspace-to_use_claw_bot/skills/model-manager/SKILL.md
-          cp -L /etc/openclaw/skills/SKILL.md /home/node/.openclaw/workspace-tom_s_assistant_bot/skills/model-manager/SKILL.md
+              # Copy SKILL.md to each agent workspace
+              cp -L /etc/openclaw/skills/SKILL.md /home/node/.openclaw/workspace-i_claw_bot/skills/model-manager/SKILL.md
+              cp -L /etc/openclaw/skills/SKILL.md /home/node/.openclaw/workspace-to_use_claw_bot/skills/model-manager/SKILL.md
+              cp -L /etc/openclaw/skills/SKILL.md /home/node/.openclaw/workspace-tom_s_assistant_bot/skills/model-manager/SKILL.md
 
-          chown -R 1000:1000 /home/node/.openclaw
-          chmod -R u+rwX,go-rwx /home/node/.openclaw
-
-          echo "Done"
-        volumeMounts:
-        - name: config
-          mountPath: /etc/openclaw/openclaw.json
-          subPath: openclaw.json
-        - name: skills
-          mountPath: /etc/openclaw/skills
-        - name: workspace
-          mountPath: /home/node/.openclaw
+              echo "InitContainer done"
+          volumeMounts:
+            - name: config
+              mountPath: /etc/openclaw/openclaw.json
+              subPath: openclaw.json
+            - name: skills
+              mountPath: /etc/openclaw/skills
+            - name: workspace
+              mountPath: /home/node/.openclaw
       containers:
       - name: openclaw
         image: ghcr.io/openclaw/openclaw:2026.3.28 # {"$imagepolicy": "flux-system:openclaw"}
