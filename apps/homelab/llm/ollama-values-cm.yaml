@@ -12,33 +12,46 @@ data:
         number: 1
       models:
         pull:
-          - dolphin
-          - dolphin-embedding
+          - dolphin3:8b-llama3.1-q4_K_M
+          - mxbai-embed-large
     extraEnv:
       - name: HSA_OVERRIDE_GFX_VERSION
         value: "10.3.0"
+
       - name: GPU_MAX_ALLOC_PERCENT
         value: "100"
       - name: GPU_MAX_HEAP_SIZE
         value: "100"
+
       - name: OLLAMA_MAX_LOADED_MODELS
         value: "2"
+
       - name: OLLAMA_NUM_PARALLEL
         value: "1"
+
       - name: OLLAMA_CONTEXT_LENGTH
-        value: "20480"        # max safe for 8GB VRAM
-      - name: OLLAMA_QUEUE_SIZE
-        value: "4"            # max concurrency without OOM
-      - name: OLLAMA_KV_CACHE
+        value: "16384"
+
+      - name: OLLAMA_MAX_QUEUE
+        value: "4"
+
+      - name: OLLAMA_KV_CACHE_TYPE
         value: "gpu"
+
+      - name: OLLAMA_FLASH_ATTENTION
+        value: "false"
+
       - name: OLLAMA_METRICS
         value: "true"
+
     nodeSelector:
       gpu.type: amd-rx6600xt
+
     tolerations:
       - key: gpu
         operator: Exists
         effect: NoSchedule
+
     resources:
       requests:
         cpu: 250m
@@ -46,12 +59,14 @@ data:
       limits:
         cpu: 1000m
         memory: 512Mi
+
     persistentVolume:
       enabled: true
       size: 20Gi
       storageClass: local-path
       accessModes:
         - ReadWriteOnce
+
     service:
       type: LoadBalancer
       port: 11434
