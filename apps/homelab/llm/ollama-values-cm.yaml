@@ -41,9 +41,6 @@ data:
       - name: OLLAMA_FLASH_ATTENTION
         value: "false"
 
-      - name: OLLAMA_METRICS
-        value: "true"
-
     nodeSelector:
       gpu.type: amd-rx6600xt
 
@@ -67,6 +64,20 @@ data:
       accessModes:
         - ReadWriteOnce
 
+    extraContainers:
+        - name: exporter
+          image: ghcr.io/norskhelsenett/ollama-metrics:latest
+          env:
+            - name: OLLAMA_HOST
+              value: "http://localhost:11434"
+          ports:
+            - name: metrics
+              containerPort: 8080
+
     service:
       type: LoadBalancer
       port: 11434
+      additionalPorts:
+        - name: metrics
+          port: 8080
+          targetPort: 8080
