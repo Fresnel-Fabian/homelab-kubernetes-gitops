@@ -14,6 +14,16 @@ data:
         pull:
           - dolphin3:8b-llama3.1-q4_K_M
           - mxbai-embed-large
+          
+    extraContainers:
+        - name: exporter
+          image: ghcr.io/norskhelsenett/ollama-metrics:latest
+          env:
+            - name: OLLAMA_HOST
+              value: "http://localhost:11434"
+          ports:
+            - name: metrics
+              containerPort: 8080
     extraEnv:
       - name: HSA_OVERRIDE_GFX_VERSION
         value: "10.3.0"
@@ -63,16 +73,6 @@ data:
       storageClass: local-path
       accessModes:
         - ReadWriteOnce
-
-    extraContainers:
-        - name: exporter
-          image: ghcr.io/norskhelsenett/ollama-metrics:latest
-          env:
-            - name: OLLAMA_HOST
-              value: "http://localhost:11434"
-          ports:
-            - name: metrics
-              containerPort: 8080
 
     service:
       type: LoadBalancer
