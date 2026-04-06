@@ -10,7 +10,7 @@ data:
     Route tasks like a human brain — most things run on autopilot locally.
     Escalate to cloud only when local can't handle the depth. Default free, earn your way up.
     ```
-    TIER 0 │ Local       │ qwen3        │ ollama/qwen3:8b                       │ DEFAULT — free, local, always first
+    TIER 0 │ Local       │ dolphin      │ ollama/dolphin3:8b-llama3.1-q4_K_M    │ DEFAULT — free, local, always first
     TIER 0 │ Reflex      │ flash-lite   │ google/gemini-2.5-flash-lite          │ trivial / high-volume cloud fallback
     TIER 0 │ Reflex      │ nano         │ openai/gpt-5-nano                     │ trivial / high-volume cloud fallback
     TIER 1 │ System 1    │ flash        │ google/gemini-2.5-flash               │ workhorse when local fails
@@ -20,135 +20,138 @@ data:
     TIER 2 │ System 2    │ o3-mini      │ openai/o3-mini                        │ math / proofs
     TIER 3 │ Deep Work   │ sonnet       │ anthropic/claude-sonnet-4-6           │ quality writing / code
     TIER 3 │ Deep Work   │ gpt5         │ openai/gpt-5.2                        │ frontier reasoning
-    TIER 3 │ Deep Work   │ gemini-pro   │ google/gemini-3.1-pro-preview         │ frontier multimodal
+    TIER 3 │ Deep Work   │ gemini-pro   │ google/gemini-3.1-pro-preview         │ frontier multimodal / 1M ctx
     TIER 4 │ Frontier    │ opus         │ anthropic/claude-opus-4-6             │ max Anthropic quality
     TIER 4 │ Frontier    │ gpt5-pro     │ openai/gpt-5.2-pro                    │ max OpenAI quality
     ```
+ 
+    ---
+
+    ## About Dolphin3
+    Dolphin3:8b-llama3.1-q4_K_M is an instruction-tuned Llama 3.1 8B fine-tune optimised
+    for agentic tasks, tool use, and direct instruction following.
+    - Context window: 8192 tokens (hard limit — escalate for long conversations)
+    - Strengths: instruction following, coding, bash, kubectl, structured output
+    - Quantization: q4_K_M — good balance of quality vs memory (~5GB VRAM)
+    - No system prompt filtering — follows instructions directly
 
     ---
 
     ## Routing Rules
 
-    ### TIER 0 — Local (qwen3) ← DEFAULT
-    **Always try qwen3 first. It is free, runs in-cluster, and has zero latency cost.**
-    Use for everything until proven insufficient:
-    - General chat, Q&A, explanations, summaries
-    - Most coding tasks, debugging, config changes
-    - kubectl commands, bash scripts, file edits
-    - Translation, reformatting, classification
-    - Any task where being wrong costs nothing
+    ### TIER 0 — Local (dolphin) ← DEFAULT
+    **Always try dolphin first. Free, in-cluster, zero API cost.**
+    Best suited for:
+    - Direct instruction tasks — bash, kubectl, file edits, config changes
+    - Code generation, debugging, scripting
+    - Structured output — JSON, YAML, CSV transformations
+    - Short Q&A, summarisation, classification
+    - Agentic tool-use loops where speed matters
 
-    **Escalate away from qwen3 when:**
-    - Task requires real-time web knowledge (→ flash for web grounding)
-    - Local model gives a wrong answer twice in a row (→ flash or haiku)
-    - Task needs >8k output tokens (context limit)
+    **Hard limits — escalate when:**
+    - Conversation exceeds ~6k tokens (context window is 8192 — leave headroom)
+    - Task requires real-time web knowledge (→ flash)
+    - Wrong answer twice in a row (→ flash or haiku)
+    - Task requires nuanced reasoning or long-context analysis (→ flash-think or sonnet)
     - User explicitly requests a cloud model
 
     ### TIER 0 — Reflex Cloud (flash-lite · nano)
-    First cloud fallback when qwen3 is rate-limited or unavailable:
+    First cloud fallback when dolphin is unavailable or context is full:
     - Keyword extraction, entity recognition, yes/no classification
-    - Reformatting structured data (JSON/YAML/CSV transformations)
-    - Repetitive summarisation loops across many chunks
+    - Reformatting structured data across many chunks
     - Any task you'd delegate to a regex if you could
 
     ### TIER 1 — System 1 (flash · haiku · mini)
-    Cloud workhorse. Handles everything qwen3 couldn't:
-    - Tasks requiring up-to-date knowledge (post training cutoff)
-    - Web search grounding (flash is best here — native Google Search)
-    - General coding, debugging, explaining concepts
-    - Summarising docs, writing emails, chat, Q&A
-    - Most CLI / kubectl tasks, file edits, config changes
-
-    **Rotation strategy:** cycle flash → haiku → mini to spread spend across providers
-    and get natural load-balancing plus provider-specific strengths.
+    Cloud workhorse for tasks dolphin can't handle:
+    - Tasks requiring knowledge after July 2025 (dolphin cutoff)
+    - Web search grounding (flash has native Google Search)
+    - Long-context tasks (flash handles 1M tokens)
+    - General coding, explaining concepts, writing
+    **Rotation:** flash → haiku → mini for load balancing.
 
     ### TIER 2 — System 2 (flash-think · o3-mini)
-    Switch when the task demands deliberate reasoning:
-    - Multi-step planning chains or dependency graphs
+    Deliberate reasoning tasks:
+    - Multi-step planning, dependency graphs
     - Debugging subtle logic errors across many files
-    - Designing system architecture or data models from scratch
-    - When Tier 1 gives a wrong/shallow answer twice in a row
-    - Tradeoff analysis between non-obvious options
-    - Use **o3-mini** specifically for maths, proofs, algorithm correctness
+    - System architecture design from scratch
+    - When Tier 1 gives wrong/shallow answer twice
+    - Use **o3-mini** for maths, proofs, algorithm correctness
 
     ### TIER 3 — Deep Work (sonnet · gpt5 · gemini-pro)
-    Reserve for where quality of thought is the bottleneck:
-    - Novel research synthesis, writing requiring real judgment
+    Quality of thought is the bottleneck:
     - Security review, threat modelling, compliance analysis
     - Complex refactors touching core abstractions
-    - Long-context document understanding (gemini-pro → 1M context)
-    - When flash-think is still missing the mark
+    - Long-context document understanding (gemini-pro → 1M ctx)
+    - Novel research synthesis
 
     ### TIER 4 — Frontier (opus · gpt5-pro)
-    Only when maximum quality justifies maximum cost:
-    - Mission-critical production decisions (infra redesign, data migrations)
-    - Nuanced creative work where every word matters
+    Maximum quality, maximum cost — reserve for critical decisions:
+    - Mission-critical production changes (infra redesign, data migrations)
     - Final review pass on security-critical code
-    - When the user explicitly escalates or stakes are existential
+    - When the user says "best model" or "spare no expense"
 
     ---
 
     ## Self-Escalation Trigger Phrases
-    The agent should recognise these signals in its own reasoning and escalate automatically:
 
     | Signal                                                  | Action                       |
     |---------------------------------------------------------|------------------------------|
-    | qwen3 attempted task twice with no correct answer       | → flash or haiku             |
-    | Task requires knowledge after October 2024              | → flash (web grounding)      |
+    | dolphin attempted task twice with no correct answer     | → flash or haiku             |
+    | Conversation approaching 6k tokens                     | → flash (more context)       |
+    | Task requires knowledge after July 2025                 | → flash (web grounding)      |
     | "I'm not confident about..."                            | Escalate one tier            |
     | Same bug attempted twice with no fix                    | → flash-think                |
     | Task requires deep understanding of unfamiliar codebase | → sonnet                     |
     | User says "think harder" / "you're missing something"   | Escalate one tier            |
     | Math / proof / formal verification required             | → o3-mini                    |
     | Prod deploy, data migration, security review            | → at least flash-think       |
-    | Long document (>100k tokens) ingestion                  | → gemini-pro (1M ctx)        |
+    | Long document (>6k tokens) ingestion                   | → gemini-pro (1M ctx)        |
     | User says "best model" / "spare no expense"             | → opus or gpt5-pro           |
-    | Cost is explicitly the constraint                       | → qwen3 (free local)         |
+    | Cost is explicitly the constraint                       | → dolphin (free local)       |
     | Ollama unavailable / rate limited                       | → flash-lite or nano         |
 
     ---
 
     ## Budget-Aware Routing Profiles
-    Use `/profile <name>` to switch the active rotation pool:
 
-    | Profile    | Models in rotation                                      | When to use              |
-    |------------|---------------------------------------------------------|--------------------------|
-    | `local`    | qwen3                                                   | Free, always-on default  |
-    | `budget`   | qwen3 → flash-lite → nano → haiku                       | High-volume jobs, drafts |
-    | `standard` | qwen3 → flash → mini → haiku                            | Default daily work       |
-    | `reasoning`| flash-think → o3-mini                                   | Analysis / proofs        |
-    | `premium`  | gemini-pro → sonnet → gpt5                              | Complex tasks            |
-    | `frontier` | opus → gpt5-pro                                         | Max quality only         |
+    | Profile     | Models in rotation                                      | When to use              |
+    |-------------|---------------------------------------------------------|--------------------------|
+    | `local`     | dolphin                                                 | Free, always-on default  |
+    | `budget`    | dolphin → flash-lite → nano → haiku                     | High-volume jobs, drafts |
+    | `standard`  | dolphin → flash → mini → haiku                          | Default daily work       |
+    | `reasoning` | flash-think → o3-mini                                   | Analysis / proofs        |
+    | `premium`   | gemini-pro → sonnet → gpt5                              | Complex tasks            |
+    | `frontier`  | opus → gpt5-pro                                         | Max quality only         |
 
     ---
 
     ## Session Model Switch (no bash needed)
     Use `/model <alias>` directly in chat.
 
-    | Alias        | Model                                  | Tier      | ~Input cost/MTok |
-    |--------------|----------------------------------------|-----------|------------------|
-    | `qwen3`      | ollama/qwen3:8b                        | Local     | FREE             |
-    | `flash-lite` | google/gemini-2.5-flash-lite           | Reflex    | ~$0.10           |
-    | `nano`       | openai/gpt-5-nano                      | Reflex    | ~$0.05           |
-    | `flash`      | google/gemini-2.5-flash                | System 1  | ~$0.15           |
-    | `haiku`      | anthropic/claude-haiku-4-5             | System 1  | ~$1.00           |
-    | `mini`       | openai/gpt-5-mini                      | System 1  | ~$0.25           |
-    | `flash-think`| google/gemini-2.5-flash-thinking       | System 2  | ~$0.15 + think   |
-    | `o3-mini`    | openai/o3-mini                         | System 2  | reasoning-based  |
-    | `sonnet`     | anthropic/claude-sonnet-4-6            | Deep Work | ~$3.00           |
-    | `gpt5`       | openai/gpt-5.2                         | Deep Work | ~$1.75           |
-    | `gemini-pro` | google/gemini-3.1-pro-preview          | Deep Work | ~$2.00           |
-    | `opus`       | anthropic/claude-opus-4-6              | Frontier  | ~$5.00           |
-    | `gpt5-pro`   | openai/gpt-5.2-pro                     | Frontier  | ~$21.00          |
+    | Alias        | Model                                  | Tier      | ~Input cost/MTok | Context  |
+    |--------------|----------------------------------------|-----------|------------------|----------|
+    | `dolphin`    | ollama/dolphin3:8b-llama3.1-q4_K_M     | Local     | FREE             | 8k       |
+    | `flash-lite` | google/gemini-2.5-flash-lite           | Reflex    | ~$0.10           | 1M       |
+    | `nano`       | openai/gpt-5-nano                      | Reflex    | ~$0.05           | 128k     |
+    | `flash`      | google/gemini-2.5-flash                | System 1  | ~$0.15           | 1M       |
+    | `haiku`      | anthropic/claude-haiku-4-5             | System 1  | ~$1.00           | 200k     |
+    | `mini`       | openai/gpt-5-mini                      | System 1  | ~$0.25           | 128k     |
+    | `flash-think`| google/gemini-2.5-flash-thinking       | System 2  | ~$0.15 + think   | 1M       |
+    | `o3-mini`    | openai/o3-mini                         | System 2  | reasoning-based  | 200k     |
+    | `sonnet`     | anthropic/claude-sonnet-4-6            | Deep Work | ~$3.00           | 200k     |
+    | `gpt5`       | openai/gpt-5.2                         | Deep Work | ~$1.75           | 128k     |
+    | `gemini-pro` | google/gemini-3.1-pro-preview          | Deep Work | ~$2.00           | 1M       |
+    | `opus`       | anthropic/claude-opus-4-6              | Frontier  | ~$5.00           | 200k     |
+    | `gpt5-pro`   | openai/gpt-5.2-pro                     | Frontier  | ~$21.00          | 128k     |
 
     ---
 
     ## Change Global Default
-    When user says "set default model to X" or "make X the default":
+    When user says "set default model to X":
     ```bash
     openclaw config set agents.defaults.model.primary <full-model-ref>
     ```
-    Then confirm:
+    Confirm:
     ```bash
     openclaw models status --plain
     ```
@@ -163,8 +166,7 @@ data:
 
     ---
 
-    ## Deprecation Notes (March 2026)
+    ## Deprecation Notes (April 2026)
     - `google/gemini-2.0-flash` → **retiring June 1 2026** · migrate to `flash-lite` or `flash`
-    - `google/gemini-3-pro-preview` → **retired March 9 2026** · use `gemini-pro`
     - `openai/gpt-4o` / `gpt-4o-mini` → superseded by `gpt5` / `nano`
     - Always prefer non-preview aliases where latency and stability matter
