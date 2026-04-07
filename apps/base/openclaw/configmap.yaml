@@ -104,11 +104,8 @@ data:
             "openai/gpt-5.2-pro":                   { "alias": "gpt5-pro"    }
           },
           "memorySearch": {
-            "provider": "ollama",
-            "model": "mxbai-embed-large",
-            "remote": {
-              "baseUrl": "http://llm-ollama.llm.svc.cluster.local:11434/v1"
-            },
+            "provider": "gemini",
+            "model": "gemini-embedding-001",
             "query": {
               "hybrid": {
                 "enabled": true,
