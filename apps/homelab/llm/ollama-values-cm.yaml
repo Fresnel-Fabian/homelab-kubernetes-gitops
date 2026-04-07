@@ -25,7 +25,7 @@ data:
       - name: OLLAMA_NUM_PARALLEL
         value: "1"
       - name: OLLAMA_CONTEXT_LENGTH
-        value: "20480"
+        value: "8192"
       - name: OLLAMA_METRICS
         value: "true"
     nodeSelector:
