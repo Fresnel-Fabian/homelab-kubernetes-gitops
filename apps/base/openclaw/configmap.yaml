@@ -39,13 +39,6 @@ data:
           }
         }
       },
-      "memory": {
-        "embeddings": {
-          "provider": "ollama",
-          "model": "ollama/mxbai-embed-large:v1",
-          "baseUrl": "http://llm-ollama.llm.svc.cluster.local:11434/v1"
-        }
-      },
       "tools": {
         "web": {
           "search": {
@@ -97,20 +90,42 @@ data:
             ]
           },
           "models": {
-            "ollama/dolphin3:8b-llama3.1-q4_K_M": { "alias": "dolphin" },
-            "google/gemini-2.5-flash-lite": { "alias": "flash-lite" },
+            "ollama/dolphin3:8b-llama3.1-q4_K_M":  { "alias": "dolphin"     },
+            "google/gemini-2.5-flash-lite":         { "alias": "flash-lite"  },
             "google/gemini-3.1-flash-lite-preview": { "alias": "flash3-lite" },
-            "openai/gpt-5-nano": { "alias": "nano" },
-            "google/gemini-2.5-flash": { "alias": "flash" },
-            "openai/gpt-5-mini": { "alias": "mini" },
-            "anthropic/claude-haiku-4-5": { "alias": "haiku" },
-            "google/gemini-2.5-flash-thinking": { "alias": "flash-think" },
-            "openai/o3-mini": { "alias": "o3-mini" },
-            "openai/gpt-5.2": { "alias": "gpt5" },
-            "anthropic/claude-sonnet-4-6": { "alias": "sonnet" },
-            "google/gemini-3.1-pro-preview": { "alias": "gemini-pro" },
-            "anthropic/claude-opus-4-6": { "alias": "opus" },
-            "openai/gpt-5.2-pro": { "alias": "gpt5-pro" }
+            "openai/gpt-5-nano":                    { "alias": "nano"        },
+            "google/gemini-2.5-flash":              { "alias": "flash"       },
+            "openai/gpt-5-mini":                    { "alias": "mini"        },
+            "anthropic/claude-haiku-4-5":           { "alias": "haiku"       },
+            "google/gemini-2.5-flash-thinking":     { "alias": "flash-think" },
+            "openai/o3-mini":                       { "alias": "o3-mini"     },
+            "openai/gpt-5.2":                       { "alias": "gpt5"        },
+            "anthropic/claude-sonnet-4-6":          { "alias": "sonnet"      },
+            "google/gemini-3.1-pro-preview":        { "alias": "gemini-pro"  },
+            "anthropic/claude-opus-4-6":            { "alias": "opus"        },
+            "openai/gpt-5.2-pro":                   { "alias": "gpt5-pro"    }
+          },
+          "memorySearch": {
+            "provider": "ollama",
+            "model": "mxbai-embed-large",
+            "remote": {
+              "baseUrl": "http://llm-ollama.llm.svc.cluster.local:11434/v1"
+            },
+            "query": {
+              "hybrid": {
+                "enabled": true,
+                "vectorWeight": 0.7,
+                "textWeight": 0.3,
+                "mmr": {
+                  "enabled": true,
+                  "lambda": 0.7
+                },
+                "temporalDecay": {
+                  "enabled": true,
+                  "halfLifeDays": 30
+                }
+              }
+            }
           },
           "sandbox": {
             "mode": "off"
@@ -144,43 +159,40 @@ data:
       "auth": {
         "cooldowns": {
           "billingBackoffHours": 5,
-          "billingMaxHours": 24,
-          "failureWindowHours": 24
+          "billingMaxHours":     24,
+          "failureWindowHours":  24
         }
       },
       "channels": {
         "telegram": {
           "network": {
             "autoSelectFamily": false,
-            "dnsResultOrder": "ipv4first"
+            "dnsResultOrder":   "ipv4first"
           },
           "accounts": {
             "i_claw_bot": {
-              "botToken": "${TELEGRAM_I_CLAW_BOT_TOKEN}",
-              "streaming": "off",
-              "typingIndicator": true,
+              "botToken":       "${TELEGRAM_I_CLAW_BOT_TOKEN}",
+              "streaming":      "off",
               "textChunkLimit": 4096,
-              "chunkMode": "newline",
-              "dmPolicy": "pairing",
-              "groupPolicy": "open"
+              "chunkMode":      "newline",
+              "dmPolicy":       "pairing",
+              "groupPolicy":    "open"
             },
             "to_use_claw_bot": {
-              "botToken": "${TELEGRAM_TO_USE_CLAW_BOT_TOKEN}",
-              "streaming": "off",
-              "typingIndicator": true,
+              "botToken":       "${TELEGRAM_TO_USE_CLAW_BOT_TOKEN}",
+              "streaming":      "off",
               "textChunkLimit": 4096,
-              "chunkMode": "newline",
-              "dmPolicy": "pairing",
-              "groupPolicy": "open"
+              "chunkMode":      "newline",
+              "dmPolicy":       "pairing",
+              "groupPolicy":    "open"
             },
             "tom_s_assistant_bot": {
-              "botToken": "${TELEGRAM_TOM_S_ASSISTANT_BOT_TOKEN}",
-              "streaming": "off",
-              "typingIndicator": true,
+              "botToken":       "${TELEGRAM_TOM_S_ASSISTANT_BOT_TOKEN}",
+              "streaming":      "off",
               "textChunkLimit": 4096,
-              "chunkMode": "newline",
-              "dmPolicy": "pairing",
-              "groupPolicy": "open"
+              "chunkMode":      "newline",
+              "dmPolicy":       "pairing",
+              "groupPolicy":    "open"
             }
           }
         }
