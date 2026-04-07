@@ -13,52 +13,27 @@ data:
       models:
         pull:
           - qwen3:8b
-          - mxbai-embed-large
-
-      extraContainers:
-          - name: exporter
-            image: ghcr.io/norskhelsenett/ollama-metrics:latest
-            env:
-              - name: OLLAMA_HOST
-                value: "http://localhost:11434"
-            ports:
-              - name: metrics
-                containerPort: 8080
     extraEnv:
       - name: HSA_OVERRIDE_GFX_VERSION
         value: "10.3.0"
-
       - name: GPU_MAX_ALLOC_PERCENT
         value: "100"
       - name: GPU_MAX_HEAP_SIZE
         value: "100"
-
       - name: OLLAMA_MAX_LOADED_MODELS
-        value: "2"
-
+        value: "1"
       - name: OLLAMA_NUM_PARALLEL
         value: "1"
-
       - name: OLLAMA_CONTEXT_LENGTH
-        value: "16384"
-
-      - name: OLLAMA_MAX_QUEUE
-        value: "4"
-
-      - name: OLLAMA_KV_CACHE_TYPE
-        value: "gpu"
-
-      - name: OLLAMA_FLASH_ATTENTION
-        value: "false"
-
+        value: "20480"
+      - name: OLLAMA_METRICS
+        value: "true"
     nodeSelector:
       gpu.type: amd-rx6600xt
-
     tolerations:
       - key: gpu
         operator: Exists
         effect: NoSchedule
-
     resources:
       requests:
         cpu: 250m
@@ -66,18 +41,12 @@ data:
       limits:
         cpu: 2000m
         memory: 4Gi
-
     persistentVolume:
       enabled: true
       size: 20Gi
       storageClass: local-path
       accessModes:
         - ReadWriteOnce
-
     service:
       type: LoadBalancer
       port: 11434
-      additionalPorts:
-        - name: metrics
-          port: 8080
-          targetPort: 8080
