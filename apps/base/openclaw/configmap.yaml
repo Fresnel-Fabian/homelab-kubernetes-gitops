@@ -31,9 +31,7 @@ data:
               {
                 "id": "ollama/dolphin3:8b-llama3.1-q4_K_M",
                 "name": "dolphin3:8b-llama3.1-q4_K_M",
-                "cost": { "input": 0, "output": 0 },
-                "contextWindow": 8192,
-                "maxTokens": 2048
+                "cost": { "input": 0, "output": 0 }
               }
             ]
           }
