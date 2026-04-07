@@ -12,7 +12,7 @@ data:
         number: 1
       models:
         pull:
-          - dolphin3:8b-llama3.1-q4_K_M
+          - qwen3:8b
           - mxbai-embed-large
 
       extraContainers:

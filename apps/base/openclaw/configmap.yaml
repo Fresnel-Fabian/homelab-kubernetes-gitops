@@ -29,8 +29,8 @@ data:
             "api": "openai-completions",
             "models": [
               {
-                "id": "ollama/dolphin3:8b-llama3.1-q4_K_M",
-                "name": "dolphin3:8b-llama3.1-q4_K_M",
+                "id": "ollama/qwen3:8b",
+                "name": "qwen3:8b",
                 "cost": { "input": 0, "output": 0 }
               }
             ]
@@ -59,26 +59,26 @@ data:
             "name": "i_claw_bot",
             "workspace": "~/.openclaw/workspace-i_claw_bot",
             "agentDir": "~/.openclaw/agents/i_claw_bot/agent",
-            "model": "ollama/dolphin3:8b-llama3.1-q4_K_M"
+            "model": "ollama/qwen3:8b"
           },
           {
             "id": "to_use_claw_bot",
             "name": "To_use_claw_bot",
             "workspace": "~/.openclaw/workspace-to_use_claw_bot",
             "agentDir": "~/.openclaw/agents/to_use_claw_bot/agent",
-            "model": "ollama/dolphin3:8b-llama3.1-q4_K_M"
+            "model": "ollama/qwen3:8b"
           },
           {
             "id": "tom_s_assistant_bot",
             "name": "tom_s_assistant_bot",
             "workspace": "~/.openclaw/workspace-tom_s_assistant_bot",
             "agentDir": "~/.openclaw/agents/tom_s_assistant_bot/agent",
-            "model": "ollama/dolphin3:8b-llama3.1-q4_K_M"
+            "model": "ollama/qwen3:8b"
           }
         ],
         "defaults": {
           "model": {
-            "primary": "ollama/dolphin3:8b-llama3.1-q4_K_M",
+            "primary": "ollama/qwen3:8b",
             "fallbacks": [
               "google/gemini-2.5-flash-lite",
               "openai/gpt-5-nano",
@@ -88,7 +88,7 @@ data:
             ]
           },
           "models": {
-            "ollama/dolphin3:8b-llama3.1-q4_K_M":  { "alias": "dolphin"     },
+            "ollama/qwen3:8b":                      { "alias": "qwen3"     },
             "google/gemini-2.5-flash-lite":         { "alias": "flash-lite"  },
             "google/gemini-3.1-flash-lite-preview": { "alias": "flash3-lite" },
             "openai/gpt-5-nano":                    { "alias": "nano"        },
