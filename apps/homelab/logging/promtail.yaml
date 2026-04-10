@@ -26,3 +26,9 @@ spec:
           - drop:
               expression: 'addrConn\.createTransport failed to connect.*127\.0\.0\.1:2379'
               drop_counter_reason: "apiserver-etcd-grpc-keepalive-noise"
+          - drop:
+              expression: 'Timeout or abort while handling.*projectcalico.org'
+              drop_counter_reason: "calico-apiserver-discovery-timeout"
+          - drop:
+              expression: 'http2: stream closed.*tigera-apiserver'
+              drop_counter_reason: "calico-apiserver-stream-closed"
