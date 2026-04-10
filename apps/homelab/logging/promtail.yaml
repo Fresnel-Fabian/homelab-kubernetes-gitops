@@ -19,16 +19,13 @@ spec:
       clients:
         - url: http://loki-gateway/loki/api/v1/push
       snippets:
-        pipelineStages:
+        pipeline_stages:
           - drop:
-              expression: 'rejected connection on client endpoint.*"error":"EOF"'
-              drop_counter_reason: "etcd-grpc-keepalive-noise"
+              drop_counter_reason: etcd-grpc-keepalive-noise
+              expression: rejected connection on client endpoint.*"error":"EOF"
           - drop:
-              expression: 'addrConn\.createTransport failed to connect.*127\.0\.0\.1:2379'
-              drop_counter_reason: "apiserver-etcd-grpc-keepalive-noise"
+              drop_counter_reason: apiserver-etcd-grpc-keepalive-noise
+              expression: addrConn\.createTransport failed to connect.*127\.0\.0\.1:2379
           - drop:
-              expression: 'Timeout or abort while handling.*projectcalico.org'
-              drop_counter_reason: "calico-apiserver-discovery-timeout"
-          - drop:
-              expression: 'http2: stream closed.*tigera-apiserver'
-              drop_counter_reason: "calico-apiserver-stream-closed"
+              drop_counter_reason: calico-apiserver-noise
+              expression: klog-logger=tigera-apiserver
