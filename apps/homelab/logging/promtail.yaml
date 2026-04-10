@@ -18,3 +18,11 @@ spec:
     config:
       clients:
         - url: http://loki-gateway/loki/api/v1/push
+      snippets:
+        pipelineStages:
+          - drop:
+              expression: 'rejected connection on client endpoint.*"error":"EOF"'
+              drop_counter_reason: "etcd-grpc-keepalive-noise"
+          - drop:
+              expression: 'addrConn\.createTransport failed to connect.*127\.0\.0\.1:2379'
+              drop_counter_reason: "apiserver-etcd-grpc-keepalive-noise"
