@@ -1,14 +1,16 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: ollama-metrics
+  name: llama-server-metrics
   namespace: llm
+  labels:
+    app.kubernetes.io/name: llama-server
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: ollama
+      app.kubernetes.io/name: llama-server
   endpoints:
-    - port: metrics
+    - port: http
       path: /metrics
       interval: 15s
       scrapeTimeout: 10s
