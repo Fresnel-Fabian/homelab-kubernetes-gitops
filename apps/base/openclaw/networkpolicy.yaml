@@ -23,7 +23,7 @@ spec:
         matchLabels:
           kubernetes.io/metadata.name: llm
     ports:
-    - port: 11434
+    - port: 8080
   - to:
     - namespaceSelector:
         matchLabels:

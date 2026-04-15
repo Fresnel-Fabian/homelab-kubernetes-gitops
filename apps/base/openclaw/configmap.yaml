@@ -25,14 +25,14 @@ data:
         "mode": "merge",
         "providers": {
           "ollama": {
-            "baseUrl": "http://llm-ollama.llm.svc.cluster.local:11434/v1",
+            "baseUrl": "http://llama-server.llm.svc.cluster.local:8080/v1",
             "api": "openai-completions",
             "models": [
               {
                 "id": "ollama/qwen3:8b",
-                "name": "qwen3:8b",
+                "name": "qwen3-8b-q4_k_m.gguf",
                 "cost": { "input": 0, "output": 0 },
-                "contextWindow": 16384
+                "contextWindow": 8192
               }
             ]
           }
