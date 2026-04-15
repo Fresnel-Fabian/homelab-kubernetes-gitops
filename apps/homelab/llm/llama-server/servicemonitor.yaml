@@ -5,6 +5,7 @@ metadata:
   namespace: llm
   labels:
     app.kubernetes.io/name: llama-server
+    release: monitoring-prometheus
 spec:
   selector:
     matchLabels:
