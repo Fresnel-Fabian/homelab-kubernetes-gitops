@@ -37,21 +37,13 @@ data:
             ]
           },
           "openai": {
-            "api": "openai-completions"
-          }
-        }
-      },
-      "tools": {
-        "web": {
-          "search": {
-            "provider": "gemini",
-            "gemini": {
-              "model": "gemini-2.5-flash"
-            },
-            "cacheTtlMinutes": 30
-          },
-          "fetch": {
-            "cacheTtlMinutes": 30
+            "baseUrl": "https://api.openai.com/v1",
+            "api": "openai-completions",
+            "models": [
+              { "id": "gpt-5-nano" },
+              { "id": "gpt-5-mini" },
+              { "id": "o3-mini" }
+            ]
           }
         }
       },
