@@ -10,7 +10,7 @@ data:
     Route tasks like a human brain — most things run on autopilot locally.
     Escalate to cloud only when local can't handle the depth. Default free, earn your way up.
     ```
-    TIER 0 │ Local       │ qwen3        │ ollama/qwen3:8b                       │ DEFAULT — free, local, always first
+    TIER 0 │ Local       │ qwen3        │ openai/qwen3:8b                       │ DEFAULT — free, local, always first
     TIER 0 │ Reflex      │ flash-lite   │ google/gemini-2.5-flash-lite          │ trivial / high-volume cloud fallback
     TIER 0 │ Reflex      │ nano         │ openai/gpt-5-nano                     │ trivial / high-volume cloud fallback
     TIER 1 │ System 1    │ flash        │ google/gemini-2.5-flash               │ workhorse when local fails
@@ -104,7 +104,7 @@ data:
     | Long document (>100k tokens) ingestion                  | → gemini-pro (1M ctx)        |
     | User says "best model" / "spare no expense"             | → opus or gpt5-pro           |
     | Cost is explicitly the constraint                       | → qwen3 (free local)         |
-    | Ollama unavailable / rate limited                       | → flash-lite or nano         |
+    | openai unavailable / rate limited                       | → flash-lite or nano         |
 
     ---
 
@@ -127,7 +127,7 @@ data:
 
     | Alias        | Model                                  | Tier      | ~Input cost/MTok |
     |--------------|----------------------------------------|-----------|------------------|
-    | `qwen3`      | ollama/qwen3:8b                        | Local     | FREE             |
+    | `qwen3`      | openai/qwen3:8b                        | Local     | FREE             |
     | `flash-lite` | google/gemini-2.5-flash-lite           | Reflex    | ~$0.10           |
     | `nano`       | openai/gpt-5-nano                      | Reflex    | ~$0.05           |
     | `flash`      | google/gemini-2.5-flash                | System 1  | ~$0.15           |
