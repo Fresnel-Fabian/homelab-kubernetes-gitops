@@ -35,15 +35,6 @@ data:
                 "contextWindow": 16384
               }
             ]
-          },
-          "openai": {
-            "baseUrl": "https://api.openai.com/v1",
-            "api": "openai-completions",
-            "models": [
-              { "id": "gpt-5-nano", "name": "GPT-5 Nano" },
-              { "id": "gpt-5-mini", "name": "GPT-5 Mini" },
-              { "id": "o3-mini",    "name": "O3 Mini" }
-            ]
           }
         }
       },
