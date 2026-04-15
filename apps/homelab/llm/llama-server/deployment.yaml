@@ -38,7 +38,7 @@ spec:
             - "--n-gpu-layers"
             - "99"              # Offload all layers to GPU
             - "--ctx-size"
-            - "8192"            # Match your previous OLLAMA_CONTEXT_LENGTH
+            - "16384"            # Match your previous OLLAMA_CONTEXT_LENGTH
             - "--parallel"
             - "1"               # Single concurrent request (8GB VRAM constraint)
             - "--metrics"       # Enable Prometheus /metrics endpoint

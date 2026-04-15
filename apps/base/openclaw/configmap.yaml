@@ -32,7 +32,7 @@ data:
                 "id": "ollama/qwen3:8b",
                 "name": "qwen3-8b-q4_k_m.gguf",
                 "cost": { "input": 0, "output": 0 },
-                "contextWindow": 8192
+                "contextWindow": 16384
               }
             ]
           }
