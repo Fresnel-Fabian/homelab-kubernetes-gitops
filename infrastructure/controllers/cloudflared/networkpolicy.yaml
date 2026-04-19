@@ -79,4 +79,4 @@ spec:
         matchLabels:
           kubernetes.io/metadata.name: staging
     ports:
-    - port: 30137
+    - port: 80
