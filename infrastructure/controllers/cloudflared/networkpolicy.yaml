@@ -74,3 +74,9 @@ spec:
           kubernetes.io/metadata.name: ci-cd
     ports:
     - port: 8000
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: staging
+    ports:
+    - port: 80
