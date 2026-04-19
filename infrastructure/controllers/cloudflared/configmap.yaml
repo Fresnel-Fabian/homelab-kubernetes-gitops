@@ -32,5 +32,7 @@ data:
         service: http://ci-cd-woodpecker-server.ci-cd.svc.cluster.local:80
         originRequest:
           disableChunkedEncoding: true
+      - hostname: orangebike.fresnelfabian.com
+        service: http://orangebike.staging.svc.cluster.local:80
       # Catch-all — required, must be last
       - service: http_status:404
