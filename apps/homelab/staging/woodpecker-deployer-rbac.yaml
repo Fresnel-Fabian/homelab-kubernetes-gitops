@@ -14,7 +14,7 @@ rules:
     resources: ["deployments"]
     verbs: ["get", "list", "create", "update", "patch"]
   - apiGroups: [""]
-    resources: ["services", "configmaps", "secrets"]
+    resources: ["services", "configmaps", "secrets", "persistentvolumeclaims"]
     verbs: ["get", "list", "create", "update", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
