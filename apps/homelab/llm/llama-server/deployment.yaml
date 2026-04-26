@@ -38,11 +38,12 @@ spec:
             - "--n-gpu-layers"
             - "99"              # Offload all layers to GPU
             - "--ctx-size"
-            - "16384"            # Match your previous OLLAMA_CONTEXT_LENGTH
+            - "16384"
             - "--parallel"
             - "1"               # Single concurrent request (8GB VRAM constraint)
+            - "--cache-ram"
+            - "1024"            # Cap prompt cache at 1 GiB (default is 8 GiB → caused OOMKill)
             - "--metrics"       # Enable Prometheus /metrics endpoint
-            # - "--flash-attn"    # Flash attention for memory efficiency
             - "--jinja"         # Jinja templating for chat templates
             - "--no-webui"      # Headless — no need for the built-in UI
           env:
@@ -63,11 +64,11 @@ spec:
           resources:
             requests:
               cpu: 250m
-              memory: 512Mi
+              memory: 6Gi          # was 512Mi — model file alone is ~4.7 GiB mmap'd
               amd.com/gpu: 1
             limits:
               cpu: 4000m
-              memory: 6Gi
+              memory: 8Gi          # was 6Gi — leaves headroom for cache + overhead
               amd.com/gpu: 1
           startupProbe:
             httpGet:
