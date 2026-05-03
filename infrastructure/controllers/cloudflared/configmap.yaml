@@ -34,5 +34,8 @@ data:
           disableChunkedEncoding: true
       - hostname: orangebike.fresnelfabian.com
         service: http://orangebike.staging.svc.cluster.local:80
+      # Spire
+      - hostname: spire.fresnelfabian.com
+        service: http://c2d2-fe.staging.svc.cluster.local:80
       # Catch-all — required, must be last
       - service: http_status:404
