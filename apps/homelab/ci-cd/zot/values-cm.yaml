@@ -23,8 +23,8 @@ data:
         cpu: 50m
         memory: 64Mi
       limits:
-        cpu: 250m
-        memory: 256Mi
+        cpu: 500m
+        memory: 1Gi
 
     # Mount the config as a ConfigMap volume
     mountConfig: true
