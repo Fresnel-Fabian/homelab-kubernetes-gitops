@@ -36,9 +36,15 @@ spec:
             - "--port"
             - "8080"
             - "--n-gpu-layers"
-            - "99"              # Offload all layers to GPU
+            - "-1"              # Offload all layers to GPU
             - "--ctx-size"
-            - "16384"
+            - "40000"
+            - "--cache-type-k"
+            - "q8_0"
+            - "--cache-type-v"
+            - "q8_0"
+            - "--keep"
+            - "256"
             - "--parallel"
             - "1"               # Single concurrent request (8GB VRAM constraint)
             - "--cache-ram"
@@ -47,7 +53,7 @@ spec:
             - "--jinja"         # Jinja templating for chat templates
             - "--no-webui"      # Headless — no need for the built-in UI
           env:
-            # ROCm overrides for Navi 23 (RX 6600 XT → gfx1030)
+            # ROCm overrides for Navi 23 (RX 6600 XT → gfx1032)
             - name: HSA_OVERRIDE_GFX_VERSION
               value: "10.3.0"
             - name: GPU_MAX_ALLOC_PERCENT
