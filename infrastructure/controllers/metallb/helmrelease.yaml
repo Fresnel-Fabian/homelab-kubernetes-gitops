@@ -28,7 +28,7 @@ spec:
   values:
     prometheus:
       serviceMonitor:
-        enabled: false
+        enabled: true
 
     speaker:
       frr:
@@ -36,6 +36,8 @@ spec:
 
     frrk8s:
       enabled: false
+
+    frr-k8s:
       prometheus:
         serviceMonitor:
           enabled: false
