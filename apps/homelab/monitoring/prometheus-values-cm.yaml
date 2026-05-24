@@ -3,6 +3,7 @@ data:
   values.yaml: |
     grafana:
       enabled: false
+
     prometheus:
       prometheusSpec:
         retention: 15d
@@ -13,9 +14,13 @@ data:
               resources:
                 requests:
                   storage: 20Gi
+
     prometheusOperator:
       kubeletEndpointsEnabled: false
       kubeletEndpointSliceEnabled: true
+    prometheus-node-exporter:
+      extraArgs:
+        - --no-collector.kernel_hung
 kind: ConfigMap
 metadata:
   creationTimestamp: null
