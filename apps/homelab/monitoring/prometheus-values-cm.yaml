@@ -20,7 +20,7 @@ data:
       kubeletEndpointSliceEnabled: true
     prometheus-node-exporter:
       extraArgs:
-        - --no-collector.kernel_hung
+        no-collector.kernel_hung: ""
 kind: ConfigMap
 metadata:
   creationTimestamp: null
