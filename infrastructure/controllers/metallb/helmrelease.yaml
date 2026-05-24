@@ -7,6 +7,7 @@ metadata:
 spec:
   interval: 30m
   targetNamespace: metallb-system
+
   chart:
     spec:
       chart: metallb
@@ -16,9 +17,25 @@ spec:
         name: metallb
         namespace: flux-system
       interval: 12h
+
   install:
     createNamespace: true
     crds: Create
+
   upgrade:
     crds: CreateReplace
-  values: {}
+
+  values:
+    prometheus:
+      serviceMonitor:
+        enabled: false
+
+    speaker:
+      frr:
+        enabled: false
+
+    frrk8s:
+      enabled: false
+      prometheus:
+        serviceMonitor:
+          enabled: false
