@@ -29,6 +29,8 @@ spec:
     prometheus:
       serviceMonitor:
         enabled: true
+      serviceAccount: monitoring-prometheus-kube-prometheus
+      namespace: monitoring
 
     speaker:
       frr:
