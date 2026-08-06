@@ -1,0 +1,24 @@
+# config-patch.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: local-path-config
+  namespace: local-path-storage
+data:
+  config.json: |-
+    {
+      "nodePathMap": [
+        {
+          "node": "k8s-w-01",
+          "paths": ["/opt/local-path-provisioner"]
+        },
+        {
+          "node": "k8s-w-02",
+          "paths": ["/opt/local-path-provisioner"]
+        },
+        {
+          "node": "k8s-w-03",
+          "paths": []
+        }
+      ]
+    }
