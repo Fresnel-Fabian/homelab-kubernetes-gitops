@@ -84,7 +84,7 @@ data:
 
       # 2 agents = 2 parallel pipelines (each agent runs WOODPECKER_MAX_WORKFLOWS)
       # For a homelab, 2 is plenty. Scale up if you hit queue backlogs.
-      replicaCount: 2
+      replicaCount: 1
 
       env:
         # gRPC connection to server — must match the actual service name
