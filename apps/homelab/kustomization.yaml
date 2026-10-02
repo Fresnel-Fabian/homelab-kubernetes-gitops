@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - monitoring/
   - logging/
-  - agentic-tools/
+  # - agentic-tools/
   - llm/
   - ci-cd/
   - staging/
