@@ -25,20 +25,40 @@ spec:
         - key: gpu
           operator: Exists
           effect: NoSchedule
+      initContainers:
+        - name: fetch-model
+          image: curlimages/curl:8.11.1
+          command: ["sh", "-c"]
+          args:
+            - |
+              set -e
+              f=/models/Qwen3.5-9B-UD-Q4_K_XL.gguf
+              if [ -s "$f" ]; then echo "model present"; exit 0; fi
+              curl -fL --retry 5 --retry-delay 10 -o "$f.part" \
+                https://huggingface.co/unsloth/Qwen3.5-9B-GGUF/resolve/main/Qwen3.5-9B-UD-Q4_K_XL.gguf
+              mv "$f.part" "$f"
+              rm -f /models/qwen3-8b-q4_k_m.gguf   # reclaim PVC space
+          volumeMounts:
+            - name: models
+              mountPath: /models
       containers:
         - name: llama-server
           image: ghcr.io/ggml-org/llama.cpp:server-rocm
           args:
             - "--model"
-            - "/models/qwen3-8b-q4_k_m.gguf"
+            - "/models/Qwen3.5-9B-UD-Q4_K_XL.gguf"
+            - "--alias"
+            - "qwen3.5-9b"          # stable model name for clients (k8sgpt, OpenClaw)
             - "--host"
             - "0.0.0.0"
             - "--port"
             - "8080"
             - "--n-gpu-layers"
-            - "99"              # Offload all layers to GPU
+            - "99"
+            - "--fit"
+            - "off"                 # fail loudly instead of silently shrinking ctx
             - "--ctx-size"
-            - "40000"
+            - "65536"
             - "--cache-type-k"
             - "q8_0"
             - "--cache-type-v"
@@ -46,12 +66,22 @@ spec:
             - "--keep"
             - "256"
             - "--parallel"
-            - "1"               # Single concurrent request (8GB VRAM constraint)
+            - "1"
             - "--cache-ram"
-            - "1024"            # Cap prompt cache at 1 GiB (default is 8 GiB → caused OOMKill)
-            - "--metrics"       # Enable Prometheus /metrics endpoint
-            - "--jinja"         # Jinja templating for chat templates
-            - "--no-webui"      # Headless — no need for the built-in UI
+            - "1024"
+            - "--metrics"
+            - "--jinja"
+            - "--no-webui"
+            - "--temp"
+            - "0.7"
+            - "--top-p"
+            - "0.8"
+            - "--top-k"
+            - "20"
+            - "--presence-penalty"
+            - "1.5"
+            - "--chat-template-kwargs"
+            - '{"enable_thinking":false}'
           env:
             # ROCm overrides for Navi 23 (RX 6600 XT → gfx1032)
             - name: HSA_OVERRIDE_GFX_VERSION
