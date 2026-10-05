@@ -27,7 +27,7 @@ spec:
           effect: NoSchedule
       initContainers:
         - name: fetch-model
-          image: curlimages/curl:8.11.1
+          image: curlimages/curl:8.22.0
           command: ["sh", "-c"]
           args:
             - |
