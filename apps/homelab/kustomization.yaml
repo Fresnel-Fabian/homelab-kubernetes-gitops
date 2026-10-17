@@ -5,6 +5,6 @@ resources:
   - logging/
   # - agentic-tools/
   - llm/
-  - ci-cd/
-  - staging/
-  - production/
+  # - ci-cd/
+  # - staging/
+  # - production/
